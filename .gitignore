@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+sistema/backend/node_modules/
+sistema/frontend/node_modules/
+sistema/tests/node_modules/
+
+# Build outputs
+sistema/backend/dist/
+sistema/frontend/dist/
+
+# SQLite database files
+*.db
+*.sqlite
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo

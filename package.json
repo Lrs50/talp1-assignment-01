@@ -1,0 +1,12 @@
+{
+  "name": "talp1-assignment-01",
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "npm install --prefix sistema/backend && npm install --prefix sistema/frontend && npm install --prefix sistema/tests",
+    "dev": "concurrently --names \"backend,frontend\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix sistema/backend\" \"npm run dev --prefix sistema/frontend\"",
+    "test": "npm test --prefix sistema/tests"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
