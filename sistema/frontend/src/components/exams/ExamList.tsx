@@ -1,4 +1,4 @@
-import { Exam } from "../../api/exams";
+import { type Exam } from "../../api/exams";
 
 interface Props {
   exams: Exam[];

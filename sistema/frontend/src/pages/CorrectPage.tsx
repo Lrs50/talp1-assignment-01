@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Exam, fetchExams } from "../api/exams";
-import { StudentGrade, CorrectionMode, correctExam } from "../api/correction";
+import { type Exam, fetchExams } from "../api/exams";
+import { type StudentGrade, type CorrectionMode, correctExam } from "../api/correction";
 import { CorrectionUpload } from "../components/correction/CorrectionUpload";
 import { GradeTable } from "../components/correction/GradeTable";
 

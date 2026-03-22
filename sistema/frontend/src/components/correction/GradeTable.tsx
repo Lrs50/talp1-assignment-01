@@ -1,4 +1,4 @@
-import { StudentGrade } from "../../api/correction";
+import { type StudentGrade } from "../../api/correction";
 
 interface Props {
   grades: StudentGrade[];

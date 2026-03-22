@@ -125,3 +125,11 @@ export function deleteAlternative(
     .run(alternativeId, questionId);
   return result.changes > 0;
 }
+
+export function isQuestionUsedByExam(questionId: number): boolean {
+  const db = getDatabase();
+  const row = db
+    .prepare("SELECT 1 FROM exam_questions WHERE question_id = ? LIMIT 1")
+    .get(questionId);
+  return row !== undefined;
+}

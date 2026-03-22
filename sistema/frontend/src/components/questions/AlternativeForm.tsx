@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alternative } from "../../api/questions";
+import { type Alternative } from "../../api/questions";
 
 interface Props {
   alternative?: Alternative;

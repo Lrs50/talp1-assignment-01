@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  Question,
+  type Question,
   fetchQuestions,
   createQuestion,
   updateQuestion,

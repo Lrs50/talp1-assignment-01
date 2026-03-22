@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Question, Alternative, addAlternative, updateAlternative, deleteAlternative } from "../../api/questions";
+import { type Question, type Alternative, addAlternative, updateAlternative, deleteAlternative } from "../../api/questions";
 import { AlternativeForm } from "./AlternativeForm";
 
 interface Props {

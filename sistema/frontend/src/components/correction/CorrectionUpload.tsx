@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { CorrectionMode } from "../../api/correction";
-import { Exam } from "../../api/exams";
+import { type CorrectionMode } from "../../api/correction";
+import { type Exam } from "../../api/exams";
 
 interface Props {
   exams: Exam[];

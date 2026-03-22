@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Exam, AnswerMode } from "../../api/exams";
-import { Question } from "../../api/questions";
+import { type Exam, type AnswerMode } from "../../api/exams";
+import { type Question } from "../../api/questions";
 
 interface Props {
   exam?: Exam;

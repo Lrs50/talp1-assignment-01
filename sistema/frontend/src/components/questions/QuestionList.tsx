@@ -1,4 +1,4 @@
-import { Question } from "../../api/questions";
+import { type Question } from "../../api/questions";
 
 interface Props {
   questions: Question[];

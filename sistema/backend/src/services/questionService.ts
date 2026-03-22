@@ -24,8 +24,12 @@ export function updateQuestion(id: number, statement: string): Question {
 }
 
 export function deleteQuestion(id: number): void {
-  const deleted = questionRepository.deleteQuestion(id);
-  if (!deleted) throw new Error(`Question ${id} not found`);
+  const question = questionRepository.findQuestionById(id);
+  if (!question) throw new Error(`Question ${id} not found`);
+  if (questionRepository.isQuestionUsedByExam(id)) {
+    throw new Error(`Question ${id} cannot be deleted because it is used by an exam`);
+  }
+  questionRepository.deleteQuestion(id);
 }
 
 export function addAlternative(

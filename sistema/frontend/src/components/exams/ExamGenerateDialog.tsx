@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Exam, generateExam, ExamHeader } from "../../api/exams";
+import { type Exam, generateExam, type ExamHeader } from "../../api/exams";
 
 interface Props {
   exam: Exam;

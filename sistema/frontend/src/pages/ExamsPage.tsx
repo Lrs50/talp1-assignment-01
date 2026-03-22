@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Exam, fetchExams, createExam, updateExam, deleteExam, AnswerMode } from "../api/exams";
-import { Question, fetchQuestions } from "../api/questions";
+import { type Exam, fetchExams, createExam, updateExam, deleteExam, type AnswerMode } from "../api/exams";
+import { type Question, fetchQuestions } from "../api/questions";
 import { ExamList } from "../components/exams/ExamList";
 import { ExamForm } from "../components/exams/ExamForm";
 import { ExamGenerateDialog } from "../components/exams/ExamGenerateDialog";
