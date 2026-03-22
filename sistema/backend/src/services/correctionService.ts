@@ -8,6 +8,7 @@ import {
   parseAnswerKeyCsv,
   parseStudentResponseCsv,
 } from "../utils/csvParser";
+import * as correctionsRepository from "../repositories/correctionsRepository";
 
 function scoreStrictLetters(
   studentAnswer: string,
@@ -98,4 +99,34 @@ export function correctExam(
       maxScore,
     };
   });
+}
+
+export interface CorrectionWithId extends StudentGrade {
+  correctionId: number;
+}
+
+export function correctExamAndSave(
+  examId: number,
+  answerKeyCsvText: string,
+  studentResponsesCsvText: string,
+  mode: CorrectionMode,
+  answerMode: "letters" | "powers_of_2"
+): CorrectionWithId[] {
+  // Perform the correction
+  const grades = correctExam(answerKeyCsvText, studentResponsesCsvText, mode, answerMode);
+  
+  // Save to database
+  const record = correctionsRepository.saveCorrectionRecord(
+    examId,
+    answerKeyCsvText,
+    studentResponsesCsvText,
+    mode,
+    JSON.stringify(grades)
+  );
+  
+  // Return grades with correction ID
+  return grades.map(grade => ({
+    ...grade,
+    correctionId: record.id
+  }));
 }

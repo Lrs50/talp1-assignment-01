@@ -329,3 +329,14 @@ hr {
   letter-spacing: 0.1em;
   margin-bottom: 12px;
 }
+
+/* ── Animations ──────────────────────────────────────────── */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

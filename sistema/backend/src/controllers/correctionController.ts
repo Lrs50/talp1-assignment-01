@@ -1,7 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { correctExam } from "../services/correctionService";
+import { correctExamAndSave } from "../services/correctionService";
 import { CorrectionMode } from "../models";
 import * as examRepository from "../repositories/examRepository";
+import * as correctionsRepository from "../repositories/correctionsRepository";
 
 const router = Router();
 
@@ -28,7 +29,8 @@ router.post("/", (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    const grades = correctExam(
+    const grades = correctExamAndSave(
+      parseInt(examId, 10),
       answerKey,
       studentResponses,
       mode as CorrectionMode,
@@ -36,6 +38,60 @@ router.post("/", (req: Request, res: Response, next: NextFunction) => {
     );
 
     res.json(grades);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/", (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const corrections = correctionsRepository.getAllCorrections();
+    
+    // Enrich with exam info
+    const enriched = corrections.map(c => ({
+      ...c,
+      results: JSON.parse(c.results_json)
+    }));
+    
+    res.json(enriched);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/exam/:examId", (req: Request<{ examId: string }>, res: Response, next: NextFunction) => {
+  try {
+    const examId = parseInt(req.params.examId, 10);
+    const corrections = correctionsRepository.getCorrectionsByExamId(examId);
+    
+    // Enrich with parsed results
+    const enriched = corrections.map(c => ({
+      ...c,
+      results: JSON.parse(c.results_json)
+    }));
+    
+    res.json(enriched);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/:id", (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const correctionId = parseInt(req.params.id, 10);
+    const correction = correctionsRepository.getCorrectionById(correctionId);
+    
+    if (!correction) {
+      res.status(404).json({ error: `Correction ${correctionId} not found` });
+      return;
+    }
+    
+    const enriched = {
+      ...correction,
+      results: JSON.parse(correction.results_json)
+    };
+    
+    res.json(enriched);
   } catch (err) {
     next(err);
   }

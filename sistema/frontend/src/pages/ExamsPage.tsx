@@ -12,14 +12,20 @@ export function ExamsPage() {
   const [creatingNew, setCreatingNew] = useState(false);
   const [generatingExam, setGeneratingExam] = useState<Exam | null>(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   async function loadData() {
     try {
+      setLoading(true);
       const [examData, questionData] = await Promise.all([fetchExams(), fetchQuestions()]);
       setExams(examData);
       setQuestions(questionData);
+      setError("");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to load data");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -29,34 +35,43 @@ export function ExamsPage() {
 
   async function handleCreate(title: string, answerMode: AnswerMode, questionIds: number[]) {
     try {
+      setSubmitting(true);
       await createExam(title, answerMode, questionIds);
       setCreatingNew(false);
       setError("");
       await loadData();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create exam");
+    } finally {
+      setSubmitting(false);
     }
   }
 
   async function handleUpdate(title: string, answerMode: AnswerMode, questionIds: number[]) {
     if (!editingExam) return;
     try {
+      setSubmitting(true);
       await updateExam(editingExam.id, title, answerMode, questionIds);
       setEditingExam(null);
       setError("");
       await loadData();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to update exam");
+    } finally {
+      setSubmitting(false);
     }
   }
 
   async function handleDelete(id: number) {
     try {
+      setSubmitting(true);
       await deleteExam(id);
       setError("");
       await loadData();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to delete exam");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -70,13 +85,38 @@ export function ExamsPage() {
           </p>
         </div>
         {!creatingNew && !editingExam && (
-          <button className="btn-primary" onClick={() => { setCreatingNew(true); setError(""); }}>
+          <button 
+            className="btn-primary" 
+            onClick={() => { setCreatingNew(true); setError(""); }}
+            disabled={loading}
+          >
             + New Exam
           </button>
         )}
       </div>
 
       {error && <div className="alert alert-error">{error}</div>}
+
+      {loading && !editingExam && !creatingNew && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          padding: 48,
+          color: "var(--color-text-muted)",
+        }}>
+          <div style={{
+            width: 18,
+            height: 18,
+            border: "2px solid var(--color-border)",
+            borderTopColor: "var(--color-primary)",
+            borderRadius: "50%",
+            animation: "spin 0.6s linear infinite",
+          }} />
+          Loading exams...
+        </div>
+      )}
 
       {creatingNew && (
         <ExamForm
@@ -95,7 +135,7 @@ export function ExamsPage() {
         />
       )}
 
-      {!creatingNew && !editingExam && (
+      {!loading && !creatingNew && !editingExam && (
         <ExamList
           exams={exams}
           onEdit={setEditingExam}

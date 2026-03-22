@@ -1,0 +1,63 @@
+import { getDatabase } from "./database";
+
+export interface CorrectionRecord {
+  id: number;
+  exam_id: number;
+  created_at: string;
+  answer_key: string;
+  student_responses: string;
+  correction_mode: string;
+  results_json: string;
+}
+
+export function saveCorrectionRecord(
+  examId: number,
+  answerKey: string,
+  studentResponses: string,
+  correctionMode: string,
+  resultsJson: string
+): CorrectionRecord {
+  const db = getDatabase();
+  const stmt = db.prepare(`
+    INSERT INTO corrections (exam_id, answer_key, student_responses, correction_mode, results_json)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+  const result = stmt.run(examId, answerKey, studentResponses, correctionMode, resultsJson);
+  
+  // Query the inserted record to get the full data including created_at and id
+  const selectStmt = db.prepare(`SELECT * FROM corrections WHERE id = ?`);
+  const record = selectStmt.get(result.lastInsertRowid) as CorrectionRecord;
+  return record;
+}
+
+export function getCorrectionsByExamId(examId: number): CorrectionRecord[] {
+  const db = getDatabase();
+  const stmt = db.prepare(`
+    SELECT * FROM corrections
+    WHERE exam_id = ?
+    ORDER BY created_at DESC
+  `);
+  return stmt.all(examId) as CorrectionRecord[];
+}
+
+export function getCorrectionById(correctionId: number): CorrectionRecord | null {
+  const db = getDatabase();
+  const stmt = db.prepare(`SELECT * FROM corrections WHERE id = ?`);
+  return (stmt.get(correctionId) as CorrectionRecord) || null;
+}
+
+export function getAllCorrections(): CorrectionRecord[] {
+  const db = getDatabase();
+  const stmt = db.prepare(`
+    SELECT * FROM corrections
+    ORDER BY created_at DESC
+  `);
+  return stmt.all() as CorrectionRecord[];
+}
+
+export function deleteCorrection(correctionId: number): boolean {
+  const db = getDatabase();
+  const stmt = db.prepare(`DELETE FROM corrections WHERE id = ?`);
+  const result = stmt.run(correctionId);
+  return result.changes > 0;
+}

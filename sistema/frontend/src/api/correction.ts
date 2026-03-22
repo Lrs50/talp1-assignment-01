@@ -16,6 +16,16 @@ export interface StudentGrade {
   maxScore: number;
 }
 
+export interface CorrectionRecord {
+  id: number;
+  exam_id: number;
+  created_at: string;
+  answer_key: string;
+  student_responses: string;
+  correction_mode: string;
+  results: StudentGrade[];
+}
+
 export function correctExam(
   examId: number,
   answerKey: string,
@@ -25,5 +35,17 @@ export function correctExam(
   return request<StudentGrade[]>("/correction", {
     method: "POST",
     body: JSON.stringify({ examId, answerKey, studentResponses, mode }),
+  });
+}
+
+export function getCorrectionsByExamId(examId: number): Promise<CorrectionRecord[]> {
+  return request<CorrectionRecord[]>(`/correction/exam/${examId}`, {
+    method: "GET",
+  });
+}
+
+export function getAllCorrections(): Promise<CorrectionRecord[]> {
+  return request<CorrectionRecord[]>("/correction", {
+    method: "GET",
   });
 }

@@ -1,5 +1,6 @@
 import { Given, When, Then, Before } from "@cucumber/cucumber";
 import assert from "assert";
+import { ExamWorld } from "./support";
 
 const BASE = "http://localhost:3001";
 
@@ -14,7 +15,6 @@ async function api(method: string, path: string, body?: unknown) {
 
 let createdQuestionId: number;
 let createdAlternativeId: number;
-let lastError: string | null;
 let questionList: unknown[];
 
 // Clean database before each scenario via a test helper endpoint
@@ -29,22 +29,24 @@ Given("the system has no questions", async function () {
   }
 });
 
-When("I create a question with statement {string}", async function (statement: string) {
-  lastError = null;
-  const res = await api("POST", "/questions", { statement });
-  const body = await res.json();
-  if (res.ok) {
-    createdQuestionId = (body as { id: number }).id;
-  } else {
-    lastError = (body as { error: string }).error;
-  }
+When("I create a question with statement {string}", function (this: ExamWorld, statement: string) {
+  this.lastError = null;
+  return api("POST", "/questions", { statement }).then(async (res) => {
+    const body = await res.json();
+    if (res.ok) {
+      createdQuestionId = (body as { id: number }).id;
+    } else {
+      this.lastError = (body as { error: string }).error;
+    }
+  });
 });
 
-When("I try to create a question with an empty statement", async function () {
-  lastError = null;
-  const res = await api("POST", "/questions", { statement: "" });
-  const body = await res.json();
-  if (!res.ok) lastError = (body as { error: string }).error;
+When("I try to create a question with an empty statement", function (this: ExamWorld) {
+  this.lastError = null;
+  return api("POST", "/questions", { statement: "" }).then(async (res) => {
+    const body = await res.json();
+    if (!res.ok) this.lastError = (body as { error: string }).error;
+  });
 });
 
 Then("the question list contains {int} question(s)", async function (count: number) {
@@ -147,6 +149,6 @@ When("I delete the alternative", async function () {
   await api("DELETE", `/questions/${createdQuestionId}/alternatives/${createdAlternativeId}`);
 });
 
-Then("I receive an error", function () {
-  assert.ok(lastError, "Expected an error but got none");
+Then("I receive an error", function (this: ExamWorld) {
+  assert.ok(this.lastError, "Expected an error but got none");
 });

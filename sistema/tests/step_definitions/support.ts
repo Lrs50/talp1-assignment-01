@@ -21,6 +21,8 @@ Before(async function () {
   await deleteAll("/questions");
 });
 
-class ExamWorld extends World {}
+export class ExamWorld extends World {
+  lastError: string | null = null;
+}
 
 setWorldConstructor(ExamWorld);

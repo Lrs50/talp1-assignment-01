@@ -74,8 +74,9 @@ When("I correct the exam in {string} mode", async function (mode: string) {
       mode,
     }),
   });
-  assert.ok(res.ok, `Correction failed: ${res.status} ${await res.text()}`);
-  grades = (await res.json()) as StudentGrade[];
+  const body = await res.json();
+  assert.ok(res.ok, `Correction failed: ${res.status} ${body.error || ""}`);
+  grades = body as StudentGrade[];
 });
 
 When("I correct the exam in {string} mode for powers_of_2", async function (mode: string) {
@@ -90,8 +91,9 @@ When("I correct the exam in {string} mode for powers_of_2", async function (mode
       mode,
     }),
   });
-  assert.ok(res.ok, `Correction failed: ${res.status} ${await res.text()}`);
-  grades = (await res.json()) as StudentGrade[];
+  const body = await res.json();
+  assert.ok(res.ok, `Correction failed: ${res.status} ${body.error || ""}`);
+  grades = body as StudentGrade[];
 });
 
 function findStudent(name: string): StudentGrade {
@@ -100,12 +102,14 @@ function findStudent(name: string): StudentGrade {
   return grade;
 }
 
-Then("{string}'s total score is {float} out of {int}", function (name: string, score: number, maxScore: number) {
+Then(/^(.+)'s total score is ([\d.]+) out of (\d+)$/, (name: string, score: string, maxScore: string) => {
+  const scoreNum = parseFloat(score);
+  const maxScoreNum = parseInt(maxScore, 10);
   const grade = findStudent(name);
-  assert.ok(Math.abs(grade.totalScore - score) < 0.001, `Expected ${score}, got ${grade.totalScore}`);
-  assert.strictEqual(grade.maxScore, maxScore);
+  assert.ok(Math.abs(grade.totalScore - scoreNum) < 0.001, `Expected ${scoreNum}, got ${grade.totalScore}`);
+  assert.strictEqual(grade.maxScore, maxScoreNum);
 });
 
-Then("the grade report contains {int} students", function (count: number) {
+Then("the grade report contains {int} students", (count: number) => {
   assert.strictEqual(grades.length, count);
 });

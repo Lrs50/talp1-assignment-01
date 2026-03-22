@@ -1,0 +1,148 @@
+
+> tests@1.0.0 test
+> cucumber-js --config cucumber.json
+
+Cannot use 'progress-bar' formatter for output to 'stdout' as not a TTY. Switching to 'progress' formatter.
+...FU...FU...FU...FU...FU....F-......................................F...F...............................
+
+Failures:
+
+1) Scenario: Strict correction - all correct # features/exam_correction.feature:6
+   ✔ Before # step_definitions/support.ts:19
+   ✔ Given an answer key with version 1 answers "A,B" # step_definitions/correction.steps.ts:42
+   ✔ And student "Alice" CPF "111" version 1 answered "A,B" # step_definitions/correction.steps.ts:53
+   ✖ When I correct the exam in "strict" mode # step_definitions/correction.steps.ts:65
+       TypeError: Body is unusable: Body has already been read
+           at consumeBody (node:internal/deps/undici/undici:6195:15)
+           at _Response.json (node:internal/deps/undici/undici:6150:18)
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/correction.steps.ts:78:23)
+           at processTicksAndRejections (node:internal/process/task_queues:105:5)
+   ? Then Alice's total score is 2 out of 2
+       Undefined. Implement with the following snippet:
+
+         Then('Alice\'s total score is {int} out of {int}', function (int, int2) {
+         // Then('Alice\'s total score is {int} out of {float}', function (int, float) {
+         // Then('Alice\'s total score is {float} out of {int}', function (float, int) {
+         // Then('Alice\'s total score is {float} out of {float}', function (float, float2) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+
+2) Scenario: Strict correction - one wrong answer # features/exam_correction.feature:12
+   ✔ Before # step_definitions/support.ts:19
+   ✔ Given an answer key with version 1 answers "A,B" # step_definitions/correction.steps.ts:42
+   ✔ And student "Bob" CPF "222" version 1 answered "A,C" # step_definitions/correction.steps.ts:53
+   ✖ When I correct the exam in "strict" mode # step_definitions/correction.steps.ts:65
+       TypeError: Body is unusable: Body has already been read
+           at consumeBody (node:internal/deps/undici/undici:6195:15)
+           at _Response.json (node:internal/deps/undici/undici:6150:18)
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/correction.steps.ts:78:23)
+           at processTicksAndRejections (node:internal/process/task_queues:105:5)
+   ? Then Bob's total score is 1 out of 2
+       Undefined. Implement with the following snippet:
+
+         Then('Bob\'s total score is {int} out of {int}', function (int, int2) {
+         // Then('Bob\'s total score is {int} out of {float}', function (int, float) {
+         // Then('Bob\'s total score is {float} out of {int}', function (float, int) {
+         // Then('Bob\'s total score is {float} out of {float}', function (float, float2) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+
+3) Scenario: Strict correction - all wrong # features/exam_correction.feature:18
+   ✔ Before # step_definitions/support.ts:19
+   ✔ Given an answer key with version 1 answers "A,B" # step_definitions/correction.steps.ts:42
+   ✔ And student "Carol" CPF "333" version 1 answered "C,D" # step_definitions/correction.steps.ts:53
+   ✖ When I correct the exam in "strict" mode # step_definitions/correction.steps.ts:65
+       TypeError: Body is unusable: Body has already been read
+           at consumeBody (node:internal/deps/undici/undici:6195:15)
+           at _Response.json (node:internal/deps/undici/undici:6150:18)
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/correction.steps.ts:78:23)
+           at processTicksAndRejections (node:internal/process/task_queues:105:5)
+   ? Then Carol's total score is 0 out of 2
+       Undefined. Implement with the following snippet:
+
+         Then('Carol\'s total score is {int} out of {int}', function (int, int2) {
+         // Then('Carol\'s total score is {int} out of {float}', function (int, float) {
+         // Then('Carol\'s total score is {float} out of {int}', function (float, int) {
+         // Then('Carol\'s total score is {float} out of {float}', function (float, float2) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+
+4) Scenario: Partial correction with powers of 2 - fully correct # features/exam_correction.feature:24
+   ✔ Before # step_definitions/support.ts:19
+   ✔ Given an answer key with version 1 answers "3" # step_definitions/correction.steps.ts:42
+   ✔ And student "Dave" CPF "444" version 1 answered "3" # step_definitions/correction.steps.ts:53
+   ✖ When I correct the exam in "partial" mode for powers_of_2 # step_definitions/correction.steps.ts:81
+       TypeError: Body is unusable: Body has already been read
+           at consumeBody (node:internal/deps/undici/undici:6195:15)
+           at _Response.json (node:internal/deps/undici/undici:6150:18)
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/correction.steps.ts:94:23)
+           at processTicksAndRejections (node:internal/process/task_queues:105:5)
+   ? Then Dave's total score is 1 out of 1
+       Undefined. Implement with the following snippet:
+
+         Then('Dave\'s total score is {int} out of {int}', function (int, int2) {
+         // Then('Dave\'s total score is {int} out of {float}', function (int, float) {
+         // Then('Dave\'s total score is {float} out of {int}', function (float, int) {
+         // Then('Dave\'s total score is {float} out of {float}', function (float, float2) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+
+5) Scenario: Partial correction with powers of 2 - half correct # features/exam_correction.feature:30
+   ✔ Before # step_definitions/support.ts:19
+   ✔ Given an answer key with version 1 answers "3" # step_definitions/correction.steps.ts:42
+   ✔ And student "Eve" CPF "555" version 1 answered "1" # step_definitions/correction.steps.ts:53
+   ✖ When I correct the exam in "partial" mode for powers_of_2 # step_definitions/correction.steps.ts:81
+       TypeError: Body is unusable: Body has already been read
+           at consumeBody (node:internal/deps/undici/undici:6195:15)
+           at _Response.json (node:internal/deps/undici/undici:6150:18)
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/correction.steps.ts:94:23)
+           at processTicksAndRejections (node:internal/process/task_queues:105:5)
+   ? Then Eve's total score is 0.5 out of 1
+       Undefined. Implement with the following snippet:
+
+         Then('Eve\'s total score is {float} out of {int}', function (float, int) {
+         // Then('Eve\'s total score is {float} out of {float}', function (float, float2) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+
+6) Scenario: Multiple students in one correction run # features/exam_correction.feature:36
+   ✔ Before # step_definitions/support.ts:19
+   ✔ Given an answer key with version 1 answers "A" # step_definitions/correction.steps.ts:42
+   ✔ And student "Alice" CPF "111" version 1 answered "A" # step_definitions/correction.steps.ts:53
+   ✔ And student "Bob" CPF "222" version 1 answered "B" # step_definitions/correction.steps.ts:53
+   ✖ When I correct the exam in "strict" mode # step_definitions/correction.steps.ts:65
+       TypeError: Body is unusable: Body has already been read
+           at consumeBody (node:internal/deps/undici/undici:6195:15)
+           at _Response.json (node:internal/deps/undici/undici:6150:18)
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/correction.steps.ts:78:23)
+           at processTicksAndRejections (node:internal/process/task_queues:105:5)
+   - Then the grade report contains 2 students # step_definitions/correction.steps.ts:109
+
+7) Scenario: Cannot create an exam without questions # features/exam_management.feature:28
+   ✔ Before # step_definitions/support.ts:19
+   ✔ When I try to create an exam with no questions # step_definitions/exam.steps.ts:55
+   ✖ Then I receive an error # step_definitions/question.steps.ts:150
+       AssertionError [ERR_ASSERTION]: Expected an error but got none
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/question.steps.ts:151:10)
+
+8) Scenario: Cannot create an exam with invalid answer mode # features/exam_management.feature:32
+   ✔ Before # step_definitions/support.ts:19
+   ✔ Given there is a question "Q1" with alternatives # step_definitions/exam.steps.ts:33
+   ✔ When I try to create an exam with answer mode "invalid" # step_definitions/exam.steps.ts:66
+   ✖ Then I receive an error # step_definitions/question.steps.ts:150
+       AssertionError [ERR_ASSERTION]: Expected an error but got none
+           at ExamWorld.<anonymous> (/Users/lucasreis/Documents/talp1-assignment-01/sistema/tests/step_definitions/question.steps.ts:151:10)
+
+23 scenarios (8 failed, 15 passed)
+82 steps (8 failed, 5 undefined, 1 skipped, 68 passed)
+0m00.197s (executing steps: 0m00.165s)

@@ -1,5 +1,6 @@
 import { Given, When, Then } from "@cucumber/cucumber";
 import assert from "assert";
+import { ExamWorld } from "./support";
 
 const BASE = "http://localhost:3001";
 
@@ -13,7 +14,6 @@ async function api(method: string, path: string, body?: unknown) {
 
 let createdExamId: number;
 let createdQuestionId: number;
-let lastError: string | null;
 
 async function createTestQuestion(statement: string): Promise<number> {
   const res = await api("POST", "/questions", { statement });
@@ -36,42 +36,45 @@ Given("there is a question {string} with alternatives", async function (statemen
 
 When(
   "I create an exam titled {string} with answer mode {string} and question {string}",
-  async function (title: string, answerMode: string, _statement: string) {
-    lastError = null;
-    const res = await api("POST", "/exams", {
+  function (this: ExamWorld, title: string, answerMode: string, _statement: string) {
+    this.lastError = null;
+    return api("POST", "/exams", {
       title,
       answerMode,
       questionIds: [createdQuestionId],
+    }).then(async (res) => {
+      const body = await res.json();
+      if (res.ok) {
+        createdExamId = (body as { id: number }).id;
+      } else {
+        this.lastError = (body as { error: string }).error;
+      }
     });
-    const body = await res.json();
-    if (res.ok) {
-      createdExamId = (body as { id: number }).id;
-    } else {
-      lastError = (body as { error: string }).error;
-    }
   }
 );
 
-When("I try to create an exam with no questions", async function () {
-  lastError = null;
-  const res = await api("POST", "/exams", {
+When("I try to create an exam with no questions", function (this: ExamWorld) {
+  this.lastError = null;
+  return api("POST", "/exams", {
     title: "No Questions Exam",
     answerMode: "letters",
     questionIds: [],
+  }).then(async (res) => {
+    const body = await res.json();
+    if (!res.ok) this.lastError = (body as { error: string }).error;
   });
-  const body = await res.json();
-  if (!res.ok) lastError = (body as { error: string }).error;
 });
 
-When("I try to create an exam with answer mode {string}", async function (answerMode: string) {
-  lastError = null;
-  const res = await api("POST", "/exams", {
+When("I try to create an exam with answer mode {string}", function (this: ExamWorld, answerMode: string) {
+  this.lastError = null;
+  return api("POST", "/exams", {
     title: "Invalid Mode Exam",
     answerMode,
     questionIds: [createdQuestionId],
+  }).then(async (res) => {
+    const body = await res.json();
+    if (!res.ok) this.lastError = (body as { error: string }).error;
   });
-  const body = await res.json();
-  if (!res.ok) lastError = (body as { error: string }).error;
 });
 
 Then("the exam list contains {int} exam(s)", async function (count: number) {

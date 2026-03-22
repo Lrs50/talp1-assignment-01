@@ -46,5 +46,15 @@ function initializeSchema(db: Database.Database): void {
       position INTEGER NOT NULL,
       PRIMARY KEY (exam_id, question_id)
     );
+
+    CREATE TABLE IF NOT EXISTS corrections (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      exam_id INTEGER NOT NULL REFERENCES exams(id) ON DELETE CASCADE,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      answer_key TEXT NOT NULL,
+      student_responses TEXT NOT NULL,
+      correction_mode TEXT NOT NULL CHECK(correction_mode IN ('strict', 'partial')),
+      results_json TEXT NOT NULL
+    );
   `);
 }
