@@ -38,59 +38,108 @@ export function CorrectionUpload({ exams, onCorrect }: Props) {
     onCorrect(examId as number, answerKeyText, studentResponsesText, mode);
   }
 
+  if (exams.length === 0) {
+    return (
+      <div className="card" style={{ textAlign: "center", padding: 32, color: "var(--color-text-muted)" }}>
+        <p style={{ margin: 0 }}>No exams found. Create an exam first before correcting responses.</p>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: "block", marginBottom: 4 }}>Exam</label>
-        <select
-          value={examId}
-          onChange={(e) => setExamId(parseInt(e.target.value, 10))}
-          style={{ padding: "4px 8px" }}
-          required
-        >
-          {exams.map((ex) => (
-            <option key={ex.id} value={ex.id}>{ex.title}</option>
-          ))}
-        </select>
+    <form onSubmit={handleSubmit}>
+      <div className="card" style={{ marginBottom: 16 }}>
+        <p style={{ margin: "0 0 16px", fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          Settings
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label>Exam</label>
+            <select
+              value={examId}
+              onChange={(e) => setExamId(parseInt(e.target.value, 10))}
+              required
+            >
+              {exams.map((ex) => (
+                <option key={ex.id} value={ex.id}>{ex.title}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group" style={{ margin: 0 }}>
+            <label>Correction Mode</label>
+            <select
+              value={mode}
+              onChange={(e) => setMode(e.target.value as CorrectionMode)}
+            >
+              <option value="strict">Strict — exact match required</option>
+              <option value="partial">Partial — proportional score (powers of 2)</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: "block", marginBottom: 4 }}>Correction Mode</label>
-        <select
-          value={mode}
-          onChange={(e) => setMode(e.target.value as CorrectionMode)}
-          style={{ padding: "4px 8px" }}
-        >
-          <option value="strict">Strict</option>
-          <option value="partial">Partial</option>
-        </select>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+        <div className="card">
+          <p style={{ margin: "0 0 12px", fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            Answer Key CSV
+          </p>
+          <input
+            type="file"
+            accept=".csv,text/csv"
+            onChange={handleAnswerKeyFile}
+            style={{ marginBottom: 10, width: "100%" }}
+          />
+          <textarea
+            value={answerKeyText}
+            onChange={(e) => setAnswerKeyText(e.target.value)}
+            placeholder="Or paste CSV here…"
+            rows={5}
+            style={{ width: "100%", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}
+          />
+          <div className="hint-box" style={{ marginTop: 8 }}>
+            <strong>Expected format:</strong><br />
+            versionNumber,q1,q2,q3<br />
+            1,A,C,B<br />
+            2,B,A,C
+          </div>
+        </div>
+
+        <div className="card">
+          <p style={{ margin: "0 0 12px", fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            Student Responses CSV
+          </p>
+          <input
+            type="file"
+            accept=".csv,text/csv"
+            onChange={handleStudentResponseFile}
+            style={{ marginBottom: 10, width: "100%" }}
+          />
+          <textarea
+            value={studentResponsesText}
+            onChange={(e) => setStudentResponsesText(e.target.value)}
+            placeholder="Or paste CSV here…"
+            rows={5}
+            style={{ width: "100%", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}
+          />
+          <div className="hint-box" style={{ marginTop: 8 }}>
+            <strong>Expected format:</strong><br />
+            studentName,studentCpf,versionNumber,q1,q2,q3<br />
+            Alice,111.222.333-44,1,A,C,B<br />
+            Bob,555.666.777-88,2,A,B,C
+          </div>
+        </div>
       </div>
 
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ display: "block", marginBottom: 4 }}>Answer Key CSV</label>
-        <input type="file" accept=".csv,text/csv" onChange={handleAnswerKeyFile} style={{ marginBottom: 6 }} />
-        <textarea
-          value={answerKeyText}
-          onChange={(e) => setAnswerKeyText(e.target.value)}
-          placeholder="Or paste answer key CSV here…"
-          rows={4}
-          style={{ width: "100%", padding: "4px 8px", fontFamily: "monospace" }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ display: "block", marginBottom: 4 }}>Student Responses CSV</label>
-        <input type="file" accept=".csv,text/csv" onChange={handleStudentResponseFile} style={{ marginBottom: 6 }} />
-        <textarea
-          value={studentResponsesText}
-          onChange={(e) => setStudentResponsesText(e.target.value)}
-          placeholder="Or paste student responses CSV here…"
-          rows={4}
-          style={{ width: "100%", padding: "4px 8px", fontFamily: "monospace" }}
-        />
-      </div>
-
-      <button type="submit">Correct Exam</button>
+      <button
+        type="submit"
+        className="btn-primary"
+        disabled={!examId || !answerKeyText.trim() || !studentResponsesText.trim()}
+        style={{ padding: "10px 24px" }}
+      >
+        Correct Exam
+      </button>
     </form>
   );
 }

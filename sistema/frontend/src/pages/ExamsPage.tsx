@@ -31,6 +31,7 @@ export function ExamsPage() {
     try {
       await createExam(title, answerMode, questionIds);
       setCreatingNew(false);
+      setError("");
       await loadData();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create exam");
@@ -42,6 +43,7 @@ export function ExamsPage() {
     try {
       await updateExam(editingExam.id, title, answerMode, questionIds);
       setEditingExam(null);
+      setError("");
       await loadData();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to update exam");
@@ -51,6 +53,7 @@ export function ExamsPage() {
   async function handleDelete(id: number) {
     try {
       await deleteExam(id);
+      setError("");
       await loadData();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to delete exam");
@@ -59,14 +62,21 @@ export function ExamsPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <h2>Exams</h2>
+      <div className="page-header">
+        <div>
+          <h2>Exams</h2>
+          <p style={{ margin: "2px 0 0", fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
+            Compose exams from your question bank and generate randomized PDF versions.
+          </p>
+        </div>
         {!creatingNew && !editingExam && (
-          <button onClick={() => setCreatingNew(true)}>+ New Exam</button>
+          <button className="btn-primary" onClick={() => { setCreatingNew(true); setError(""); }}>
+            + New Exam
+          </button>
         )}
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <div className="alert alert-error">{error}</div>}
 
       {creatingNew && (
         <ExamForm

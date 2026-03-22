@@ -36,6 +36,7 @@ export function QuestionsPage() {
       await createQuestion(newStatement.trim());
       setNewStatement("");
       setCreatingNew(false);
+      setError("");
       await loadQuestions();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create question");
@@ -46,6 +47,7 @@ export function QuestionsPage() {
     try {
       await updateQuestion(question.id, statement);
       setEditingQuestion(null);
+      setError("");
       await loadQuestions();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to update question");
@@ -55,6 +57,7 @@ export function QuestionsPage() {
   async function handleDelete(id: number) {
     try {
       await deleteQuestion(id);
+      setError("");
       await loadQuestions();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to delete question");
@@ -63,28 +66,43 @@ export function QuestionsPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <h2>Questions</h2>
+      <div className="page-header">
+        <div>
+          <h2>Questions</h2>
+          <p style={{ margin: "2px 0 0", fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
+            Build your question bank — each question needs alternatives before it can be added to an exam.
+          </p>
+        </div>
         {!creatingNew && !editingQuestion && (
-          <button onClick={() => setCreatingNew(true)}>+ New Question</button>
+          <button className="btn-primary" onClick={() => { setCreatingNew(true); setError(""); }}>
+            + New Question
+          </button>
         )}
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <div className="alert alert-error">{error}</div>}
 
       {creatingNew && (
-        <form onSubmit={handleCreate} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-          <input
-            value={newStatement}
-            onChange={(e) => setNewStatement(e.target.value)}
-            placeholder="Question statement"
-            style={{ flex: 1, padding: "4px 8px" }}
-            autoFocus
-            required
-          />
-          <button type="submit">Create</button>
-          <button type="button" onClick={() => setCreatingNew(false)}>Cancel</button>
-        </form>
+        <div className="card" style={{ marginBottom: 16 }}>
+          <p style={{ margin: "0 0 10px", fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)" }}>
+            NEW QUESTION
+          </p>
+          <form onSubmit={handleCreate} style={{ display: "flex", gap: 8 }}>
+            <input
+              value={newStatement}
+              onChange={(e) => setNewStatement(e.target.value)}
+              placeholder="Enter the question statement…"
+              style={{ flex: 1 }}
+              autoFocus
+              required
+            />
+            <button type="submit" className="btn-primary">Create</button>
+            <button type="button" onClick={() => { setCreatingNew(false); setNewStatement(""); }}>
+              Cancel
+            </button>
+          </form>
+          <p className="helper-text">After creating, click Edit to add alternatives.</p>
+        </div>
       )}
 
       {editingQuestion ? (
@@ -97,7 +115,7 @@ export function QuestionsPage() {
       ) : (
         <QuestionList
           questions={questions}
-          onEdit={(q) => setEditingQuestion(q)}
+          onEdit={(q) => { setEditingQuestion(q); setCreatingNew(false); }}
           onDelete={handleDelete}
         />
       )}

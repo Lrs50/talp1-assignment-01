@@ -7,38 +7,47 @@ interface Props {
   onGenerate: (exam: Exam) => void;
 }
 
+const MODE_LABEL: Record<string, string> = {
+  letters: "Letters (A, B, C…)",
+  powers_of_2: "Powers of 2",
+};
+
 export function ExamList({ exams, onEdit, onDelete, onGenerate }: Props) {
   if (exams.length === 0) {
-    return <p>No exams yet. Create one below.</p>;
+    return (
+      <div className="empty-state">
+        <p>No exams yet.</p>
+        <p style={{ fontSize: "0.85rem", color: "var(--color-text-subtle)" }}>
+          Create an exam by selecting questions from your question bank.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <ul style={{ listStyle: "none", padding: 0 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {exams.map((exam) => (
-        <li
-          key={exam.id}
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: 6,
-            padding: 12,
-            marginBottom: 10,
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              <p style={{ margin: 0, fontWeight: "bold" }}>{exam.title}</p>
-              <p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "#555" }}>
-                Mode: {exam.answerMode} · {exam.questionIds.length} question(s)
-              </p>
+        <div key={exam.id} className="card">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+            <div style={{ flex: 1 }}>
+              <p style={{ margin: 0, fontWeight: 700, fontSize: "1rem" }}>{exam.title}</p>
+              <div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "center", flexWrap: "wrap" }}>
+                <span className={`badge ${exam.answerMode === "letters" ? "badge-letters" : "badge-powers"}`}>
+                  {MODE_LABEL[exam.answerMode] ?? exam.answerMode}
+                </span>
+                <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>
+                  {exam.questionIds.length} question{exam.questionIds.length !== 1 ? "s" : ""}
+                </span>
+              </div>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => onGenerate(exam)}>Generate</button>
+            <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+              <button className="btn-primary" onClick={() => onGenerate(exam)}>Generate PDF</button>
               <button onClick={() => onEdit(exam)}>Edit</button>
-              <button onClick={() => onDelete(exam.id)}>Delete</button>
+              <button onClick={() => onDelete(exam.id)} className="btn-danger">Delete</button>
             </div>
           </div>
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
