@@ -23,7 +23,7 @@ export function AlternativeForm({ alternative, onSave, onCancel }: Props) {
       gap: 8,
       alignItems: "center",
       flexWrap: "wrap",
-      background: "#f8fafc",
+      background: "var(--color-bg)",
       border: "1px solid var(--color-border)",
       borderRadius: "var(--radius-sm)",
       padding: "10px 12px",
@@ -31,7 +31,7 @@ export function AlternativeForm({ alternative, onSave, onCancel }: Props) {
       <input
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="Alternative description"
+        placeholder="Alternative text…"
         style={{ flex: 1, minWidth: 200 }}
         autoFocus
         required
@@ -40,9 +40,9 @@ export function AlternativeForm({ alternative, onSave, onCancel }: Props) {
         display: "flex",
         alignItems: "center",
         gap: 6,
-        fontSize: "0.875rem",
+        fontSize: "0.85rem",
         fontWeight: 500,
-        color: "var(--color-text)",
+        color: isCorrect ? "var(--color-accent)" : "var(--color-text-muted)",
         textTransform: "none",
         letterSpacing: 0,
         cursor: "pointer",

@@ -91,7 +91,7 @@ export function ExamForm({ exam, availableQuestions, onSave, onCancel }: Props) 
                       alignItems: "flex-start",
                       padding: "10px 12px",
                       borderBottom: index < availableQuestions.length - 1 ? "1px solid var(--color-border)" : "none",
-                      background: checked ? "#eff6ff" : "transparent",
+                      background: checked ? "var(--color-border-subtle)" : "transparent",
                       cursor: "pointer",
                       textTransform: "none",
                       letterSpacing: 0,

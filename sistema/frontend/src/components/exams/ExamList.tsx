@@ -30,7 +30,7 @@ export function ExamList({ exams, onEdit, onDelete, onGenerate }: Props) {
         <div key={exam.id} className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
             <div style={{ flex: 1 }}>
-              <p style={{ margin: 0, fontWeight: 700, fontSize: "1rem" }}>{exam.title}</p>
+              <p style={{ margin: 0, fontWeight: 600, fontSize: "0.95rem", color: "var(--color-text)" }}>{exam.title}</p>
               <div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "center", flexWrap: "wrap" }}>
                 <span className={`badge ${exam.answerMode === "letters" ? "badge-letters" : "badge-powers"}`}>
                   {MODE_LABEL[exam.answerMode] ?? exam.answerMode}

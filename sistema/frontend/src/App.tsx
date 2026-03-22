@@ -5,10 +5,10 @@ import { CorrectPage } from "./pages/CorrectPage";
 
 type Page = "questions" | "exams" | "correct";
 
-const NAV_ITEMS: { id: Page; label: string; description: string }[] = [
-  { id: "questions", label: "Questions", description: "Manage question bank" },
-  { id: "exams", label: "Exams", description: "Create & generate exams" },
-  { id: "correct", label: "Correction", description: "Grade student responses" },
+const NAV_ITEMS: { id: Page; label: string }[] = [
+  { id: "questions", label: "Questions" },
+  { id: "exams", label: "Exams" },
+  { id: "correct", label: "Correction" },
 ];
 
 export default function App() {
@@ -19,21 +19,19 @@ export default function App() {
       <header style={{
         background: "var(--color-surface)",
         borderBottom: "1px solid var(--color-border)",
-        boxShadow: "var(--shadow-sm)",
       }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 32, height: 56 }}>
-            <div>
-              <span style={{
-                fontWeight: 800,
-                fontSize: "1.1rem",
-                color: "var(--color-primary)",
-                letterSpacing: "-0.02em",
-              }}>
-                ExamSystem
-              </span>
-            </div>
-            <nav style={{ display: "flex", gap: 2, flex: 1 }}>
+        <div style={{ maxWidth: 1024, margin: "0 auto", padding: "0 28px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 40, height: 54 }}>
+            <span style={{
+              fontWeight: 300,
+              fontSize: "1.05rem",
+              color: "var(--color-text)",
+              letterSpacing: "0.08em",
+              fontFamily: "var(--font-sans)",
+            }}>
+              ExamSystem
+            </span>
+            <nav style={{ display: "flex", gap: 24 }}>
               {NAV_ITEMS.map(({ id, label }) => {
                 const active = currentPage === id;
                 return (
@@ -41,15 +39,17 @@ export default function App() {
                     key={id}
                     onClick={() => setCurrentPage(id)}
                     style={{
-                      padding: "6px 16px",
+                      padding: "0",
+                      paddingBottom: "2px",
                       fontWeight: active ? 600 : 400,
-                      background: active ? "var(--color-primary)" : "transparent",
-                      color: active ? "#fff" : "var(--color-text-muted)",
+                      background: "transparent",
+                      color: active ? "var(--color-text)" : "var(--color-text-muted)",
                       border: "none",
-                      borderRadius: "var(--radius-sm)",
+                      borderBottom: active ? "2px solid var(--color-text)" : "2px solid transparent",
+                      borderRadius: 0,
                       fontSize: "0.9rem",
                       cursor: "pointer",
-                      transition: "background 0.15s, color 0.15s",
+                      transition: "color 0.12s, border-color 0.12s",
                     }}
                   >
                     {label}
@@ -61,7 +61,7 @@ export default function App() {
         </div>
       </header>
 
-      <main style={{ maxWidth: 960, margin: "0 auto", padding: "32px 24px" }}>
+      <main style={{ maxWidth: 1024, margin: "0 auto", padding: "36px 28px" }}>
         {currentPage === "questions" && <QuestionsPage />}
         {currentPage === "exams" && <ExamsPage />}
         {currentPage === "correct" && <CorrectPage />}

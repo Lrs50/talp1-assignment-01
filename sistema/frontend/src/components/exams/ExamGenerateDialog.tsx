@@ -38,7 +38,7 @@ export function ExamGenerateDialog({ exam, onClose }: Props) {
     <div style={{
       position: "fixed",
       inset: 0,
-      background: "rgba(0, 0, 0, 0.45)",
+        background: "rgba(17, 17, 16, 0.5)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -47,14 +47,15 @@ export function ExamGenerateDialog({ exam, onClose }: Props) {
     }}>
       <div style={{
         background: "var(--color-surface)",
-        borderRadius: "var(--radius-lg)",
+        border: "1px solid var(--color-border)",
+        borderRadius: "var(--radius-md)",
         padding: 28,
         width: "100%",
-        maxWidth: 440,
-        boxShadow: "var(--shadow-md)",
+        maxWidth: 420,
+        boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
       }}>
         <div style={{ marginBottom: 20 }}>
-          <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700 }}>Generate Exam Versions</h3>
+          <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, letterSpacing: "-0.01em" }}>Generate Exam Versions</h3>
           <p style={{ margin: "4px 0 0", fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
             {exam.title}
           </p>

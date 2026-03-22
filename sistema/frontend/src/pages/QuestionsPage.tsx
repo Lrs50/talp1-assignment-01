@@ -33,11 +33,13 @@ export function QuestionsPage() {
     e.preventDefault();
     if (!newStatement.trim()) return;
     try {
-      await createQuestion(newStatement.trim());
+      const created = await createQuestion(newStatement.trim());
       setNewStatement("");
       setCreatingNew(false);
       setError("");
       await loadQuestions();
+      // Immediately open the edit/alternatives view for the new question
+      setEditingQuestion(created);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create question");
     }
@@ -101,7 +103,7 @@ export function QuestionsPage() {
               Cancel
             </button>
           </form>
-          <p className="helper-text">After creating, click Edit to add alternatives.</p>
+          <p className="helper-text">After creating, you can add alternatives immediately.</p>
         </div>
       )}
 

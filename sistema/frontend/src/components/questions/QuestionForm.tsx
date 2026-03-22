@@ -52,39 +52,44 @@ export function QuestionForm({ question, onSave, onCancel, onAlternativesChange 
 
   return (
     <div className="card" style={{ marginBottom: 16 }}>
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-        <input
-          value={statement}
-          onChange={(e) => setStatement(e.target.value)}
-          placeholder="Question statement"
-          style={{ flex: 1 }}
-          required
-        />
-        <button type="submit" className="btn-primary">Save</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
-      </form>
+      {/* Statement editor */}
+      <div style={{ marginBottom: 20 }}>
+        <div className="section-label">Question statement</div>
+        <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8 }}>
+          <input
+            value={statement}
+            onChange={(e) => setStatement(e.target.value)}
+            placeholder="Question statement"
+            style={{ flex: 1 }}
+            required
+          />
+          <button type="submit" className="btn-primary">Save</button>
+          <button type="button" onClick={onCancel}>Cancel</button>
+        </form>
+      </div>
 
       {error && <div className="alert alert-error">{error}</div>}
 
+      {/* Alternatives */}
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)" }}>
-            ALTERNATIVES ({question.alternatives.length})
+          <span className="section-label" style={{ margin: 0 }}>
+            Alternatives ({question.alternatives.length})
           </span>
           {!addingAlternative && (
-            <button onClick={() => setAddingAlternative(true)} style={{ fontSize: "0.8rem" }}>
-              + Add alternative
+            <button onClick={() => { setAddingAlternative(true); setError(""); }} style={{ fontSize: "0.8rem" }}>
+              + Add
             </button>
           )}
         </div>
 
         {question.alternatives.length === 0 && !addingAlternative && (
-          <p style={{ fontSize: "0.875rem", color: "var(--color-text-subtle)", margin: "8px 0" }}>
-            No alternatives yet. Add at least one to use this question in an exam.
+          <p style={{ fontSize: "0.85rem", color: "var(--color-text-subtle)", margin: "8px 0 12px" }}>
+            No alternatives yet — add at least one to use this question in an exam.
           </p>
         )}
 
-        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 6 }}>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 5 }}>
           {question.alternatives.map((alt) => (
             <li key={alt.id}>
               {editingAlt?.id === alt.id ? (
@@ -98,20 +103,20 @@ export function QuestionForm({ question, onSave, onCancel, onAlternativesChange 
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
-                  padding: "8px 12px",
-                  background: alt.isCorrect ? "var(--color-correct-bg)" : "var(--color-bg)",
-                  border: `1px solid ${alt.isCorrect ? "var(--color-success-border)" : "var(--color-border)"}`,
+                  padding: "7px 11px",
+                  background: alt.isCorrect ? "var(--color-accent-bg)" : "var(--color-bg)",
+                  border: `1px solid ${alt.isCorrect ? "var(--color-accent-border)" : "var(--color-border)"}`,
                   borderRadius: "var(--radius-sm)",
                 }}>
                   <span className={`badge ${alt.isCorrect ? "badge-correct" : "badge-incorrect"}`}>
-                    {alt.isCorrect ? "Correct" : "Wrong"}
+                    {alt.isCorrect ? "✓" : "–"}
                   </span>
                   <span style={{ flex: 1, fontSize: "0.9rem" }}>{alt.description}</span>
-                  <button onClick={() => setEditingAlt(alt)} style={{ fontSize: "0.8rem" }}>Edit</button>
+                  <button className="btn-ghost" onClick={() => setEditingAlt(alt)} style={{ fontSize: "0.78rem" }}>Edit</button>
                   <button
                     onClick={() => handleDeleteAlternative(alt.id)}
                     className="btn-danger"
-                    style={{ fontSize: "0.8rem" }}
+                    style={{ fontSize: "0.78rem" }}
                   >
                     Delete
                   </button>

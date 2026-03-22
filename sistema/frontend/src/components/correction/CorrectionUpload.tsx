@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { type CorrectionMode } from "../../api/correction";
 import { type Exam } from "../../api/exams";
 
@@ -19,6 +19,12 @@ function readFileAsText(file: File): Promise<string> {
 export function CorrectionUpload({ exams, onCorrect }: Props) {
   const [examId, setExamId] = useState<number | "">(exams[0]?.id ?? "");
   const [mode, setMode] = useState<CorrectionMode>("strict");
+
+  useEffect(() => {
+    if (examId === "" && exams.length > 0) {
+      setExamId(exams[0].id);
+    }
+  }, [exams]);
   const [answerKeyText, setAnswerKeyText] = useState("");
   const [studentResponsesText, setStudentResponsesText] = useState("");
 
@@ -49,9 +55,7 @@ export function CorrectionUpload({ exams, onCorrect }: Props) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="card" style={{ marginBottom: 16 }}>
-        <p style={{ margin: "0 0 16px", fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-          Settings
-        </p>
+        <div className="section-label">Settings</div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div className="form-group" style={{ margin: 0 }}>
@@ -82,9 +86,7 @@ export function CorrectionUpload({ exams, onCorrect }: Props) {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
         <div className="card">
-          <p style={{ margin: "0 0 12px", fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-            Answer Key CSV
-          </p>
+          <div className="section-label">Answer Key CSV</div>
           <input
             type="file"
             accept=".csv,text/csv"
@@ -107,9 +109,7 @@ export function CorrectionUpload({ exams, onCorrect }: Props) {
         </div>
 
         <div className="card">
-          <p style={{ margin: "0 0 12px", fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-            Student Responses CSV
-          </p>
+          <div className="section-label">Student Responses CSV</div>
           <input
             type="file"
             accept=".csv,text/csv"
