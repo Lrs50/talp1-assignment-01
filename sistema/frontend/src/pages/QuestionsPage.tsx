@@ -24,8 +24,10 @@ export function QuestionsPage() {
       const data = await fetchQuestions();
       setQuestions(data);
       setError("");
+      return data;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to load questions");
+      return [];
     } finally {
       setLoading(false);
     }
@@ -44,9 +46,12 @@ export function QuestionsPage() {
       setNewStatement("");
       setCreatingNew(false);
       setError("");
-      await loadQuestions();
-      // Immediately open the edit/alternatives view for the new question
-      setEditingQuestion(created);
+      const freshQuestions = await loadQuestions();
+      // Find the created question in fresh data to get alternatives array
+      const freshQuestion = freshQuestions.find(q => q.id === created.id);
+      if (freshQuestion) {
+        setEditingQuestion(freshQuestion);
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create question");
     } finally {
@@ -78,6 +83,17 @@ export function QuestionsPage() {
       setError(err instanceof Error ? err.message : "Failed to delete question");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleAlternativesChange() {
+    // Reload questions and refetch the currently editing question to stay in sync
+    const freshQuestions = await loadQuestions();
+    if (editingQuestion) {
+      const refreshed = freshQuestions.find(q => q.id === editingQuestion.id);
+      if (refreshed) {
+        setEditingQuestion(refreshed);
+      }
     }
   }
 
@@ -159,7 +175,7 @@ export function QuestionsPage() {
           question={editingQuestion}
           onSave={(statement) => handleUpdate(editingQuestion, statement)}
           onCancel={() => setEditingQuestion(null)}
-          onAlternativesChange={loadQuestions}
+          onAlternativesChange={handleAlternativesChange}
         />
       ) : (
         !loading && <QuestionList

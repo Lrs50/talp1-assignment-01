@@ -26,23 +26,23 @@ function scorePartialPowersOfTwo(
 
   if (correctSum === 0) return studentSum === 0 ? 1 : 0;
 
-  // Count correct bits
+  // Jaccard Index: |intersection| / |union|
+  // Penalizes both missing bits AND extra incorrect bits selected
   let correctBits = 0;
-  let totalCorrectBits = 0;
-  let totalBits = 0;
+  let unionBits = 0;
 
   for (let bit = 0; bit < 16; bit++) {
     const mask = 1 << bit;
     const inCorrect = (correctSum & mask) !== 0;
     const inStudent = (studentSum & mask) !== 0;
 
-    if (inCorrect) totalCorrectBits++;
-    if (inStudent) totalBits++;
+    // Count bits in union (either correct OR student selected)
+    if (inCorrect || inStudent) unionBits++;
+    // Count bits in intersection (both correct AND student selected)
     if (inCorrect && inStudent) correctBits++;
   }
 
-  // Partial: ratio of correctly selected alternatives
-  return totalCorrectBits > 0 ? correctBits / totalCorrectBits : 0;
+  return unionBits > 0 ? correctBits / unionBits : 0;
 }
 
 function scoreQuestion(
