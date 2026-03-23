@@ -47,13 +47,14 @@ export function CorrectPage() {
     examId: number,
     answerKey: string,
     studentResponses: string,
-    mode: CorrectionMode
+    mode: CorrectionMode,
+    name?: string
   ) {
     setError("");
     setSuccess(false);
     try {
       setSubmitting(true);
-      const result = await correctExam(examId, answerKey, studentResponses, mode);
+      const result = await correctExam(examId, answerKey, studentResponses, mode, name);
       setGrades(result);
       setSuccess(true);
       setSelectedExamId(examId);

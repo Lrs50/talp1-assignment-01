@@ -110,7 +110,8 @@ export function correctExamAndSave(
   answerKeyCsvText: string,
   studentResponsesCsvText: string,
   mode: CorrectionMode,
-  answerMode: "letters" | "powers_of_2"
+  answerMode: "letters" | "powers_of_2",
+  name?: string
 ): CorrectionWithId[] {
   // Perform the correction
   const grades = correctExam(answerKeyCsvText, studentResponsesCsvText, mode, answerMode);
@@ -121,7 +122,8 @@ export function correctExamAndSave(
     answerKeyCsvText,
     studentResponsesCsvText,
     mode,
-    JSON.stringify(grades)
+    JSON.stringify(grades),
+    name
   );
   
   // Return grades with correction ID

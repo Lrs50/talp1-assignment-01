@@ -4,7 +4,7 @@ import { type Exam } from "../../api/exams";
 
 interface Props {
   exams: Exam[];
-  onCorrect: (examId: number, answerKey: string, studentResponses: string, mode: CorrectionMode) => void;
+  onCorrect: (examId: number, answerKey: string, studentResponses: string, mode: CorrectionMode, name?: string) => void;
 }
 
 function readFileAsText(file: File): Promise<string> {
@@ -19,6 +19,7 @@ function readFileAsText(file: File): Promise<string> {
 export function CorrectionUpload({ exams, onCorrect }: Props) {
   const [examId, setExamId] = useState<number | "">(exams[0]?.id ?? "");
   const [mode, setMode] = useState<CorrectionMode>("strict");
+  const [correctionName, setCorrectionName] = useState("");
 
   useEffect(() => {
     if (examId === "" && exams.length > 0) {
@@ -41,7 +42,7 @@ export function CorrectionUpload({ exams, onCorrect }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!examId || !answerKeyText.trim() || !studentResponsesText.trim()) return;
-    onCorrect(examId as number, answerKeyText, studentResponsesText, mode);
+    onCorrect(examId as number, answerKeyText, studentResponsesText, mode, correctionName.trim() || undefined);
   }
 
   if (exams.length === 0) {
@@ -81,6 +82,17 @@ export function CorrectionUpload({ exams, onCorrect }: Props) {
               <option value="partial">Partial — proportional score (powers of 2)</option>
             </select>
           </div>
+        </div>
+
+        <div className="form-group">
+          <label>Correction name (optional)</label>
+          <input
+            type="text"
+            value={correctionName}
+            onChange={(e) => setCorrectionName(e.target.value)}
+            placeholder="e.g. Midterm 2024-03-22"
+          />
+          <p className="helper-text">Give this correction a memorable name for later reference.</p>
         </div>
       </div>
 

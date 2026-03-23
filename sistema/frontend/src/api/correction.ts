@@ -20,6 +20,7 @@ export interface CorrectionRecord {
   id: number;
   exam_id: number;
   created_at: string;
+  name: string | null;
   answer_key: string;
   student_responses: string;
   correction_mode: string;
@@ -30,11 +31,12 @@ export function correctExam(
   examId: number,
   answerKey: string,
   studentResponses: string,
-  mode: CorrectionMode
+  mode: CorrectionMode,
+  name?: string
 ): Promise<StudentGrade[]> {
   return request<StudentGrade[]>("/correction", {
     method: "POST",
-    body: JSON.stringify({ examId, answerKey, studentResponses, mode }),
+    body: JSON.stringify({ examId, answerKey, studentResponses, mode, name }),
   });
 }
 

@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/", (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { answerKey, studentResponses, mode, examId } = req.body;
+    const { answerKey, studentResponses, mode, examId, name } = req.body;
 
     if (!answerKey || !studentResponses) {
       res.status(400).json({ error: "answerKey and studentResponses are required" });
@@ -34,7 +34,8 @@ router.post("/", (req: Request, res: Response, next: NextFunction) => {
       answerKey,
       studentResponses,
       mode as CorrectionMode,
-      exam.answerMode
+      exam.answerMode,
+      name
     );
 
     res.json(grades);

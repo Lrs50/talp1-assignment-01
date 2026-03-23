@@ -51,10 +51,22 @@ function initializeSchema(db: Database.Database): void {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       exam_id INTEGER NOT NULL REFERENCES exams(id) ON DELETE CASCADE,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      name TEXT,
       answer_key TEXT NOT NULL,
       student_responses TEXT NOT NULL,
       correction_mode TEXT NOT NULL CHECK(correction_mode IN ('strict', 'partial')),
       results_json TEXT NOT NULL
     );
   `);
+  
+  // Migration: Add name column if it doesn't exist (for existing databases)
+  try {
+    const result = db.prepare("PRAGMA table_info(corrections)").all() as Array<{ name: string }>;
+    const hasNameColumn = result.some((col: any) => col.name === "name");
+    if (!hasNameColumn) {
+      db.exec(`ALTER TABLE corrections ADD COLUMN name TEXT;`);
+    }
+  } catch (err) {
+    // Table might not exist yet or other error, ignore
+  }
 }

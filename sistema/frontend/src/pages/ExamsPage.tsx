@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
 import { type Exam, fetchExams, createExam, updateExam, deleteExam, type AnswerMode } from "../api/exams";
 import { type Question, fetchQuestions } from "../api/questions";
+import { getCorrectionsByExamId } from "../api/correction";
 import { ExamList } from "../components/exams/ExamList";
 import { ExamForm } from "../components/exams/ExamForm";
 import { ExamGenerateDialog } from "../components/exams/ExamGenerateDialog";
+import { ExamPreviewModal } from "../components/exams/ExamPreviewModal";
 
 export function ExamsPage() {
   const [exams, setExams] = useState<Exam[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [editingExam, setEditingExam] = useState<Exam | null>(null);
   const [creatingNew, setCreatingNew] = useState(false);
+  const [previewingExam, setPreviewingExam] = useState<Exam | null>(null);
   const [generatingExam, setGeneratingExam] = useState<Exam | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [correctionCounts, setCorrectionCounts] = useState(new Map<number, number>());
 
   async function loadData() {
     try {
@@ -21,6 +25,14 @@ export function ExamsPage() {
       const [examData, questionData] = await Promise.all([fetchExams(), fetchQuestions()]);
       setExams(examData);
       setQuestions(questionData);
+      
+      // Load correction counts for each exam
+      const counts = new Map<number, number>();
+      for (const exam of examData) {
+        const corrections = await getCorrectionsByExamId(exam.id);
+        counts.set(exam.id, corrections.length);
+      }
+      setCorrectionCounts(counts);
       setError("");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to load data");
@@ -138,9 +150,22 @@ export function ExamsPage() {
       {!loading && !creatingNew && !editingExam && (
         <ExamList
           exams={exams}
+          correctionCounts={correctionCounts}
           onEdit={setEditingExam}
           onDelete={handleDelete}
-          onGenerate={setGeneratingExam}
+          onGenerate={setPreviewingExam}
+        />
+      )}
+
+      {previewingExam && (
+        <ExamPreviewModal
+          exam={previewingExam}
+          questions={questions}
+          onGenerate={() => {
+            setPreviewingExam(null);
+            setGeneratingExam(previewingExam);
+          }}
+          onCancel={() => setPreviewingExam(null)}
         />
       )}
 

@@ -4,6 +4,7 @@ export interface CorrectionRecord {
   id: number;
   exam_id: number;
   created_at: string;
+  name: string | null;
   answer_key: string;
   student_responses: string;
   correction_mode: string;
@@ -15,14 +16,15 @@ export function saveCorrectionRecord(
   answerKey: string,
   studentResponses: string,
   correctionMode: string,
-  resultsJson: string
+  resultsJson: string,
+  name?: string
 ): CorrectionRecord {
   const db = getDatabase();
   const stmt = db.prepare(`
-    INSERT INTO corrections (exam_id, answer_key, student_responses, correction_mode, results_json)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO corrections (exam_id, answer_key, student_responses, correction_mode, results_json, name)
+    VALUES (?, ?, ?, ?, ?, ?)
   `);
-  const result = stmt.run(examId, answerKey, studentResponses, correctionMode, resultsJson);
+  const result = stmt.run(examId, answerKey, studentResponses, correctionMode, resultsJson, name || null);
   
   // Query the inserted record to get the full data including created_at and id
   const selectStmt = db.prepare(`SELECT * FROM corrections WHERE id = ?`);
