@@ -66,30 +66,9 @@ export function generateExamPdf(
     doc.text("CPF: ___________________________");
     doc.moveDown(1.5);
 
-    // Footer with version number and page number on ALL pages
-    const range = doc.bufferedPageRange();
-    for (let i = 0; i < range.count; i++) {
-      doc.switchToPage(range.start + i);
-      
-      // Add version number in footer (left side)
-      doc
-        .fontSize(8)
-        .font("Helvetica")
-        .text(
-          `Version: ${version.versionNumber}`,
-          50,
-          doc.page.height - 30,
-          { width: doc.page.width - 100, align: "left" }
-        );
-      
-      // Add page number in footer (right side)
-      doc.text(
-        `Page ${i + 1} of ${range.count}`,
-        50,
-        doc.page.height - 30,
-        { width: doc.page.width - 100, align: "right" }
-      );
-    }
+    // Add version info at the end of content (not on separate page)
+    doc.moveDown(2);
+    doc.fontSize(8).font("Helvetica").text(`Version: ${version.versionNumber}`, { align: "right" });
 
     doc.end();
   });

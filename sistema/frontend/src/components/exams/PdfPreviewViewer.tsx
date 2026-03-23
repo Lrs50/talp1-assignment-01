@@ -13,7 +13,7 @@ interface Props {
 export function PdfPreviewViewer({ pdfUrl, title }: Props) {
   const [numPages, setNumPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0.5);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
