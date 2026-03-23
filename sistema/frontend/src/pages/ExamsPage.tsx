@@ -6,6 +6,7 @@ import { ExamList } from "../components/exams/ExamList";
 import { ExamForm } from "../components/exams/ExamForm";
 import { ExamGenerateDialog } from "../components/exams/ExamGenerateDialog";
 import { ExamPreviewModal } from "../components/exams/ExamPreviewModal";
+import { ExamCorrectionsView } from "./ExamCorrectionsPage";
 
 export function ExamsPage() {
   const [exams, setExams] = useState<Exam[]>([]);
@@ -14,6 +15,7 @@ export function ExamsPage() {
   const [creatingNew, setCreatingNew] = useState(false);
   const [previewingExam, setPreviewingExam] = useState<Exam | null>(null);
   const [generatingExam, setGeneratingExam] = useState<Exam | null>(null);
+  const [viewingCorrectionsExamId, setViewingCorrectionsExamId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -178,7 +180,7 @@ export function ExamsPage() {
         />
       )}
 
-      {!loading && !creatingNew && !editingExam && !previewingExam && !generatingExam && (
+      {!loading && !creatingNew && !editingExam && !previewingExam && !generatingExam && !viewingCorrectionsExamId && (
         exams.length > 0 ? (
           <ExamList
             exams={exams}
@@ -186,6 +188,7 @@ export function ExamsPage() {
             onEdit={setEditingExam}
             onDelete={handleDelete}
             onGenerate={setPreviewingExam}
+            onViewCorrections={setViewingCorrectionsExamId}
           />
         ) : (
           <div className="empty-state">
@@ -200,7 +203,6 @@ export function ExamsPage() {
       {previewingExam && (
         <ExamPreviewModal
           exam={previewingExam}
-          questions={questions}
           onGenerate={() => {
             setPreviewingExam(null);
             setGeneratingExam(previewingExam);
@@ -213,6 +215,13 @@ export function ExamsPage() {
         <ExamGenerateDialog
           exam={generatingExam}
           onClose={() => setGeneratingExam(null)}
+        />
+      )}
+
+      {viewingCorrectionsExamId && (
+        <ExamCorrectionsView
+          examId={viewingCorrectionsExamId}
+          onClose={() => setViewingCorrectionsExamId(null)}
         />
       )}
     </div>

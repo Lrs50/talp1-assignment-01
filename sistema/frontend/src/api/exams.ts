@@ -70,3 +70,7 @@ export async function generateExam(
   link.click();
   URL.revokeObjectURL(url);
 }
+
+export function getPdfPreviewUrl(examId: number): string {
+  return `http://localhost:3001/exams/${examId}/pdf-preview`;
+}

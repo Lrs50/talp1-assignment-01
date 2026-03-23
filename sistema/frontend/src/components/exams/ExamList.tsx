@@ -6,6 +6,7 @@ interface Props {
   onEdit: (exam: Exam) => void;
   onDelete: (id: number) => void;
   onGenerate: (exam: Exam) => void;
+  onViewCorrections: (examId: number) => void;
 }
 
 const MODE_LABEL: Record<string, string> = {
@@ -13,7 +14,7 @@ const MODE_LABEL: Record<string, string> = {
   powers_of_2: "Powers of 2",
 };
 
-export function ExamList({ exams, correctionCounts, onEdit, onDelete, onGenerate }: Props) {
+export function ExamList({ exams, correctionCounts, onEdit, onDelete, onGenerate, onViewCorrections }: Props) {
   if (exams.length === 0) {
     return (
       <div className="empty-state">
@@ -63,6 +64,11 @@ export function ExamList({ exams, correctionCounts, onEdit, onDelete, onGenerate
               )}
             </div>
             <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+              {hasCorrections && (
+                <button onClick={() => onViewCorrections(exam.id)} style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
+                  📊 View Corrections
+                </button>
+              )}
               <button className="btn-primary" onClick={() => onGenerate(exam)}>Generate PDF</button>
               <button onClick={() => onEdit(exam)}>Edit</button>
               <button onClick={() => onDelete(exam.id)} className="btn-danger">Delete</button>

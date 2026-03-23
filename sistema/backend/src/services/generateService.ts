@@ -105,3 +105,20 @@ export async function generateExamPackage(
 
   return { zipStream };
 }
+
+export async function generateSampleExamPdf(
+  examId: number,
+  header: ExamHeader
+): Promise<Buffer> {
+  const exam = examRepository.findExamById(examId);
+  if (!exam) throw new Error(`Exam ${examId} not found`);
+
+  const versions = buildVersions(examId, 1);
+  const pdfBuffer = await generateExamPdf(
+    versions[0],
+    header,
+    exam.answerMode
+  );
+
+  return pdfBuffer;
+}
