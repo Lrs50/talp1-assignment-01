@@ -17,24 +17,30 @@ export function ExamGenerateDialog({ exam, onClose }: Props) {
   async function handleGenerate(e: React.FormEvent) {
     e.preventDefault();
     if (!course.trim() || !professor.trim() || !date.trim()) return;
-    setLoading(true);
-    setError("");
     try {
+      console.log("[ExamGenerateDialog] Starting generation");
+      setLoading(true);
+      setError("");
       const header: ExamHeader = {
         course: course.trim(),
         professor: professor.trim(),
         date: date.trim(),
       };
       await generateExam(exam.id, versions, header);
+      console.log("[ExamGenerateDialog] Generation complete");
       onClose();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Error generating exam");
+      const errorMsg = err instanceof Error ? err.message : "Error generating exam";
+      console.error("[ExamGenerateDialog] Error:", errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
   }
 
-  return (
+  try {
+    console.log("[ExamGenerateDialog] Rendering");
+    return (
     <div style={{
       position: "fixed",
       inset: 0,
@@ -122,5 +128,37 @@ export function ExamGenerateDialog({ exam, onClose }: Props) {
         </form>
       </div>
     </div>
-  );
+    );
+  } catch (err) {
+    console.error("[ExamGenerateDialog] Render error:", err);
+    return (
+      <div style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(17, 17, 16, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 100,
+        padding: 24,
+      }}>
+        <div style={{
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-md)",
+          padding: 28,
+          maxWidth: 420,
+          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+        }}>
+          <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600 }}>Error</h3>
+          <p style={{ margin: "8px 0 16px", fontSize: "0.9rem" }}>
+            Failed to generate exam dialog
+          </p>
+          <button onClick={onClose} className="btn-primary">
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 }

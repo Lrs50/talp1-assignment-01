@@ -14,7 +14,15 @@ const MODE_LABEL: Record<string, string> = {
 };
 
 export function ExamPreviewModal({ exam, questions, onGenerate, onCancel }: Props) {
-  const examQuestions = questions.filter(q => exam.questionIds.includes(q.id));
+  try {
+    console.log("[ExamPreviewModal] Rendering with exam:", exam.id, exam.title);
+    if (!exam || !questions) {
+      console.error("[ExamPreviewModal] Missing exam or questions");
+      return null;
+    }
+
+    const examQuestions = questions.filter(q => exam.questionIds.includes(q.id));
+    console.log("[ExamPreviewModal] Filtered questions:", examQuestions.length);
 
   return (
     <div style={{
@@ -105,5 +113,37 @@ export function ExamPreviewModal({ exam, questions, onGenerate, onCancel }: Prop
         </div>
       </div>
     </div>
-  );
+    );
+  } catch (err) {
+    console.error("[ExamPreviewModal] Error rendering:", err);
+    return (
+      <div style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(17, 17, 16, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 100,
+        padding: 24,
+      }}>
+        <div style={{
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-md)",
+          padding: 28,
+          maxWidth: 420,
+          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+        }}>
+          <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600 }}>Error</h3>
+          <p style={{ margin: "8px 0 16px", fontSize: "0.9rem" }}>
+            Failed to preview exam
+          </p>
+          <button onClick={onCancel} className="btn-primary">
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 }

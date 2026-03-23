@@ -13,7 +13,7 @@ const MODE_LABEL: Record<string, string> = {
   powers_of_2: "Powers of 2",
 };
 
-export function ExamList({ exams, onEdit, onDelete, onGenerate }: Props) {
+export function ExamList({ exams, correctionCounts, onEdit, onDelete, onGenerate }: Props) {
   if (exams.length === 0) {
     return (
       <div className="empty-state">
