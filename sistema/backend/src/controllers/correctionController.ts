@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { correctExamAndSave } from "../services/correctionService";
+import { correctExamAndSave, generateCorrectionReportPdf } from "../services/correctionService";
 import { CorrectionMode } from "../models";
 import * as examRepository from "../repositories/examRepository";
 import * as correctionsRepository from "../repositories/correctionsRepository";
@@ -93,6 +93,32 @@ router.get("/:id", (req: Request<{ id: string }>, res: Response, next: NextFunct
     };
     
     res.json(enriched);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/:id/report-pdf", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const correctionId = parseInt(req.params.id, 10);
+    const correction = correctionsRepository.getCorrectionById(correctionId);
+    
+    if (!correction) {
+      res.status(404).json({ error: `Correction ${correctionId} not found` });
+      return;
+    }
+
+    const grades = JSON.parse(correction.results_json);
+    const pdf = await generateCorrectionReportPdf(
+      correction.name || "Correction Report",
+      correction.created_at,
+      correction.correction_mode,
+      grades
+    );
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="correction_${correctionId}.pdf"`);
+    res.send(pdf);
   } catch (err) {
     next(err);
   }

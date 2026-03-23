@@ -8,6 +8,7 @@ import {
   parseAnswerKeyCsv,
   parseStudentResponseCsv,
 } from "../utils/csvParser";
+import PDFDocument from "pdfkit";
 import * as correctionsRepository from "../repositories/correctionsRepository";
 
 function scoreStrictLetters(
@@ -131,4 +132,54 @@ export function correctExamAndSave(
     ...grade,
     correctionId: record.id
   }));
+}
+
+export function generateCorrectionReportPdf(
+  correctionName: string,
+  creationDate: string,
+  mode: string,
+  grades: StudentGrade[]
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ margin: 50 });
+    const buffers: Buffer[] = [];
+
+    doc.on("data", (chunk) => buffers.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(buffers)));
+    doc.on("error", reject);
+
+    // Header
+    doc.fontSize(14).font("Helvetica-Bold").text(correctionName || "Correction Report", { align: "center" });
+    doc.fontSize(10).font("Helvetica").text(`Date: ${new Date(creationDate).toLocaleDateString()}`, { align: "center" });
+    doc.text(`Mode: ${mode}`, { align: "center" });
+    doc.moveDown(1.5);
+
+    // Summary stats
+    if (grades.length === 0) {
+      doc.text("No results to display");
+      doc.end();
+      return;
+    }
+
+    const scores = grades.map(g => (g.totalScore / g.maxScore) * 100);
+    const average = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+    doc.fontSize(11).font("Helvetica-Bold").text("Summary");
+    doc.fontSize(10).font("Helvetica");
+    doc.text(`Total Students: ${grades.length}`);
+    doc.text(`Average Score: ${average.toFixed(1)}%`);
+    doc.moveDown(1);
+
+    // Student scores table
+    doc.fontSize(11).font("Helvetica-Bold").text("Student Results");
+    doc.moveDown(0.5);
+
+    grades.forEach(grade => {
+      const percentage = (grade.totalScore / grade.maxScore) * 100;
+      const line = `${grade.studentName} - ${grade.totalScore}/${grade.maxScore} (${percentage.toFixed(1)}%)`;
+      doc.fontSize(10).font("Helvetica").text(line);
+    });
+
+    doc.end();
+  });
 }

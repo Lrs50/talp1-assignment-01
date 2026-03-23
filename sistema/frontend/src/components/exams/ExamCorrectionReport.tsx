@@ -1,4 +1,5 @@
 import type { CorrectionRecord, StudentGrade } from "../../api/correction";
+import { generateCorrectionReportPdf } from "../../api/exams";
 import { ScoreDistributionChart } from "./ScoreDistributionChart";
 
 interface Props {
@@ -83,9 +84,30 @@ export function ExamCorrectionReport({ correction, onClose }: Props) {
             {createdDate} · Mode: {correction.correction_mode}
           </p>
         </div>
-        <button onClick={onClose} style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
-          Close
-        </button>
+        <div style={{ display: "flex", gap: 6 }}>
+          <button 
+            onClick={async () => {
+              try {
+                const blob = await generateCorrectionReportPdf(correction.id);
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `correction_${correction.id}.pdf`;
+                link.click();
+                URL.revokeObjectURL(url);
+              } catch (err) {
+                console.error("Error exporting PDF:", err);
+                alert("Failed to export PDF. Check console for details.");
+              }
+            }}
+            style={{ padding: "6px 12px", fontSize: "0.85rem" }}
+          >
+            Export PDF
+          </button>
+          <button onClick={onClose} style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
+            Close
+          </button>
+        </div>
       </div>
 
       {/* Summary Stats */}

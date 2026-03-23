@@ -66,7 +66,7 @@ export function ExamList({ exams, correctionCounts, onEdit, onDelete, onGenerate
             <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
               {hasCorrections && (
                 <button onClick={() => onViewCorrections(exam.id)} style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
-                  📊 View Corrections
+                  View Corrections
                 </button>
               )}
               <button className="btn-primary" onClick={() => onGenerate(exam)}>Generate PDF</button>

@@ -74,3 +74,9 @@ export async function generateExam(
 export function getPdfPreviewUrl(examId: number): string {
   return `http://localhost:3001/exams/${examId}/pdf-preview`;
 }
+
+export async function generateCorrectionReportPdf(correctionId: number): Promise<Blob> {
+  const response = await fetch(`http://localhost:3001/correction/${correctionId}/report-pdf`);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.blob();
+}

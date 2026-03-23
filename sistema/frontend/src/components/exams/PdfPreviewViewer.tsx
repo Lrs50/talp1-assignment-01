@@ -23,13 +23,17 @@ export function PdfPreviewViewer({ pdfUrl, title }: Props) {
       try {
         setLoading(true);
         setError("");
-        const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+        // Fetch PDF as array buffer for more reliable loading
+        const response = await fetch(pdfUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const arrayBuffer = await response.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         pdfRef.current = pdf;
         setNumPages(pdf.numPages);
         setCurrentPage(1);
       } catch (err) {
         console.error("[PdfPreviewViewer] Error loading PDF:", err);
-        setError("Failed to load PDF preview");
+        setError(`Failed to load PDF preview: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
         setLoading(false);
       }

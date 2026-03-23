@@ -31,12 +31,6 @@ export function generateExamPdf(
     doc.fontSize(14).font("Helvetica-Bold").text(header.course, { align: "center" });
     doc.fontSize(11).font("Helvetica").text(`Professor: ${header.professor}`, { align: "center" });
     doc.text(`Date: ${header.date}`, { align: "center" });
-    doc.moveDown();
-
-    // Student info area
-    doc.fontSize(11).text("Name: ________________________________________________");
-    doc.moveDown(0.5);
-    doc.text("CPF: ___________________________");
     doc.moveDown(1.5);
 
     // Questions
@@ -64,6 +58,13 @@ export function generateExamPdf(
 
       doc.moveDown(1);
     });
+
+    // Student info area at the end
+    doc.moveDown(1);
+    doc.fontSize(11).text("Name: ________________________________________________");
+    doc.moveDown(0.5);
+    doc.text("CPF: ___________________________");
+    doc.moveDown(1.5);
 
     // Footer with version number
     const range = doc.bufferedPageRange();
