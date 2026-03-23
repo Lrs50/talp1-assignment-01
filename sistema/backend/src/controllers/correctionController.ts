@@ -98,6 +98,34 @@ router.get("/:id", (req: Request<{ id: string }>, res: Response, next: NextFunct
   }
 });
 
+router.put("/:id/rename", (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const correctionId = parseInt(req.params.id, 10);
+    const { name } = req.body;
+
+    if (name === undefined || name === null) {
+      res.status(400).json({ error: "name is required" });
+      return;
+    }
+
+    const updated = correctionsRepository.updateCorrectionName(correctionId, name);
+
+    if (!updated) {
+      res.status(404).json({ error: `Correction ${correctionId} not found` });
+      return;
+    }
+
+    const enriched = {
+      ...updated,
+      results: JSON.parse(updated.results_json)
+    };
+
+    res.json(enriched);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get("/:id/report-pdf", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     const correctionId = parseInt(req.params.id, 10);

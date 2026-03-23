@@ -51,3 +51,10 @@ export function getAllCorrections(): Promise<CorrectionRecord[]> {
     method: "GET",
   });
 }
+
+export function renameCorrectionRecord(correctionId: number, newName: string): Promise<CorrectionRecord> {
+  return request<CorrectionRecord>(`/correction/${correctionId}/rename`, {
+    method: "PUT",
+    body: JSON.stringify({ name: newName }),
+  });
+}

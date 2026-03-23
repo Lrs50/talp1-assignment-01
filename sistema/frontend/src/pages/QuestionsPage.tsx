@@ -14,6 +14,7 @@ export function QuestionsPage() {
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [creatingNew, setCreatingNew] = useState(false);
   const [newStatement, setNewStatement] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -178,11 +179,29 @@ export function QuestionsPage() {
           onAlternativesChange={handleAlternativesChange}
         />
       ) : (
-        !loading && <QuestionList
-          questions={questions}
-          onEdit={(q) => { setEditingQuestion(q); setCreatingNew(false); }}
-          onDelete={handleDelete}
-        />
+        !loading && (
+          <>
+            <div className="card" style={{ marginBottom: 16 }}>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search questions by statement…"
+                style={{ width: "100%" }}
+              />
+              <p className="helper-text" style={{ margin: "8px 0 0" }}>
+                Showing most recent first
+              </p>
+            </div>
+            <QuestionList
+              questions={questions
+                .filter(q => q.statement.toLowerCase().includes(searchQuery.toLowerCase()))
+                .reverse()}
+              onEdit={(q) => { setEditingQuestion(q); setCreatingNew(false); }}
+              onDelete={handleDelete}
+            />
+          </>
+        )
       )}
     </div>
   );

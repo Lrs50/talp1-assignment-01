@@ -3,49 +3,49 @@
 }
 
 :root {
-  /* Ink on paper palette */
-  --color-bg: #f9f9f7;
+  /* Warm pastel palette: Frieren-inspired aesthetic */
+  --color-bg: #faf8f5;
   --color-surface: #ffffff;
-  --color-border: #e4e4e0;
-  --color-border-subtle: #f0f0ec;
-  --color-border-focus: #111110;
+  --color-border: #ebe7e2;
+  --color-border-subtle: #f5f2ed;
+  --color-border-focus: #5d5249;
 
-  --color-text: #111110;
-  --color-text-muted: #71706e;
-  --color-text-subtle: #a8a8a4;
+  --color-text: #3e3630;
+  --color-text-muted: #6b6560;
+  --color-text-subtle: #8e8980;
 
-  /* Primary = ink black */
-  --color-primary: #111110;
-  --color-primary-hover: #333330;
+  /* Primary = warm brown */
+  --color-primary: #5d5249;
+  --color-primary-hover: #4d443f;
 
-  /* Accent = muted sage, used sparingly */
-  --color-accent: #5a6e4e;
-  --color-accent-bg: #f0f4ed;
-  --color-accent-border: #c8d5c2;
+  /* Accent = soft lavender, used sparingly */
+  --color-accent: #a89cc6;
+  --color-accent-bg: #f4f1fa;
+  --color-accent-border: #d9cce6;
 
-  /* Danger = muted red */
-  --color-danger: #9b2c1e;
-  --color-danger-bg: #fdf5f4;
-  --color-danger-border: #e8c4bf;
+  /* Danger = soft coral */
+  --color-danger: #c08370;
+  --color-danger-bg: #fdf5f3;
+  --color-danger-border: #e8d0c5;
 
   /* Success (alias of accent) */
-  --color-success: #5a6e4e;
-  --color-success-bg: #f0f4ed;
-  --color-success-border: #c8d5c2;
+  --color-success: #a89cc6;
+  --color-success-bg: #f4f1fa;
+  --color-success-border: #d9cce6;
 
   /* Error (alias of danger) */
-  --color-error-bg: #fdf5f4;
-  --color-error-border: #e8c4bf;
-  --color-error-text: #7a211a;
+  --color-error-bg: #fdf5f3;
+  --color-error-border: #e8d0c5;
+  --color-error-text: #7a5248;
 
   /* Sizing */
   --radius-sm: 3px;
   --radius-md: 6px;
   --radius-lg: 10px;
 
-  /* Shadows — flat, minimal */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.07);
+  /* Shadows — warm, softer */
+  --shadow-sm: 0 1px 2px rgba(93, 82, 73, 0.04);
+  --shadow-md: 0 2px 8px rgba(93, 82, 73, 0.08);
 
   /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;

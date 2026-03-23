@@ -58,7 +58,7 @@ export default function App() {
                   padding: 0,
                 }}
               >
-                ExamSystem
+                Kotae
               </button>
               {currentPage !== "home" && (
                 <nav style={{ display: "flex", gap: 24 }}>

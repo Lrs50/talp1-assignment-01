@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { type Exam, fetchExams } from "../api/exams";
-import { type StudentGrade, type CorrectionMode, correctExam, getCorrectionsByExamId, type CorrectionRecord } from "../api/correction";
+import { type StudentGrade, type CorrectionMode, correctExam, getCorrectionsByExamId, renameCorrectionRecord, type CorrectionRecord } from "../api/correction";
 import { CorrectionUpload } from "../components/correction/CorrectionUpload";
 import { GradeTable } from "../components/correction/GradeTable";
 
@@ -14,6 +14,9 @@ export function CorrectPage() {
   const [submitting, setSubmitting] = useState(false);
   const [selectedExamId, setSelectedExamId] = useState<number | null>(null);
   const [showHistroy, setShowHistory] = useState(false);
+  const [editingCorrectionId, setEditingCorrectionId] = useState<number | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [renamingError, setRenamingError] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -65,6 +68,22 @@ export function CorrectPage() {
       setError(err instanceof Error ? err.message : "Correction failed");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleRenameCorrection(correctionId: number, newName: string) {
+    if (!newName.trim()) {
+      setRenamingError("Name cannot be empty");
+      return;
+    }
+    try {
+      setRenamingError("");
+      const updated = await renameCorrectionRecord(correctionId, newName);
+      setCorrections(corrections.map(c => c.id === correctionId ? updated : c));
+      setEditingCorrectionId(null);
+      setEditingName("");
+    } catch (err: unknown) {
+      setRenamingError(err instanceof Error ? err.message : "Failed to rename");
     }
   }
 
@@ -125,6 +144,9 @@ export function CorrectPage() {
                       <thead>
                         <tr style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)" }}>
                           <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, fontSize: "0.85rem" }}>
+                            Name
+                          </th>
+                          <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, fontSize: "0.85rem" }}>
                             Date & Time
                           </th>
                           <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, fontSize: "0.85rem" }}>
@@ -139,10 +161,52 @@ export function CorrectPage() {
                         {corrections.map((correction, idx) => {
                           const date = new Date(correction.created_at);
                           const dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+                          const isEditing = editingCorrectionId === correction.id;
                           return (
                             <tr key={correction.id} style={{
                               borderBottom: idx < corrections.length - 1 ? "1px solid var(--color-border)" : "none",
                             }}>
+                              <td style={{ padding: "10px 12px", fontSize: "0.85rem" }}>
+                                {isEditing ? (
+                                  <div style={{ display: "flex", gap: 6 }}>
+                                    <input
+                                      type="text"
+                                      value={editingName}
+                                      onChange={(e) => setEditingName(e.target.value)}
+                                      style={{
+                                        flex: 1,
+                                        padding: "4px 8px",
+                                        fontSize: "0.85rem",
+                                        border: "1px solid var(--color-border-focus)",
+                                        borderRadius: "2px",
+                                      }}
+                                      autoFocus
+                                    />
+                                    <button
+                                      onClick={() => handleRenameCorrection(correction.id, editingName)}
+                                      style={{ padding: "4px 10px", fontSize: "0.75rem", background: "var(--color-primary)", color: "white", border: "none", borderRadius: "2px", cursor: "pointer" }}
+                                    >
+                                      Save
+                                    </button>
+                                    <button
+                                      onClick={() => setEditingCorrectionId(null)}
+                                      style={{ padding: "4px 10px", fontSize: "0.75rem", background: "transparent", color: "var(--color-text-muted)", border: "1px solid var(--color-border)", borderRadius: "2px", cursor: "pointer" }}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span
+                                    onClick={() => {
+                                      setEditingCorrectionId(correction.id);
+                                      setEditingName(correction.name || "");
+                                    }}
+                                    style={{ cursor: "pointer", textDecoration: "underline", color: "var(--color-primary)" }}
+                                  >
+                                    {correction.name || "<unnamed>"}
+                                  </span>
+                                )}
+                              </td>
                               <td style={{ padding: "10px 12px", fontSize: "0.85rem" }}>{dateStr}</td>
                               <td style={{ padding: "10px 12px", fontSize: "0.85rem" }}>{correction.results.length}</td>
                               <td style={{ padding: "10px 12px", fontSize: "0.85rem" }}>{correction.correction_mode}</td>

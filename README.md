@@ -1,10 +1,11 @@
-# Exam System
+# Kotae
 
 A web-based system for creating, randomizing, and grading exams.
 
 ## What It Does
 
 The Exam System allows educators to:
+
 - **Create questions** with multiple alternatives
 - **Create exams** by selecting and organizing questions
 - **Generate PDF exams** with randomized question orders and multiple versions
@@ -14,24 +15,28 @@ The Exam System allows educators to:
 ## Main Workflows
 
 ### 1. Create Questions
+
 - Go to "Questions" section
 - Add questions with multiple answer options
 - Mark the correct answer
 - Questions are saved to the question bank
 
 ### 2. Create Exams
+
 - Go to "Exams" section
 - Select questions from the question bank
 - Configure exam settings (answer mode: letters or powers of 2)
 - Save the exam
 
 ### 3. Generate Exams
+
 - From the exam list, click "Generate PDF"
 - Specify number of versions to generate
 - Download ZIP file with multiple exam versions
 - Each version has randomized question order
 
 ### 4. Grade Exams
+
 - Go to "Correction" section
 - Upload answer key and student response CSVs
 - Select correction mode (strict or partial scoring)
@@ -40,6 +45,7 @@ The Exam System allows educators to:
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v18+)
 - npm
 
@@ -53,11 +59,13 @@ npm run setup
 ### Running the System
 
 Start both backend and frontend:
+
 ```bash
 npm run dev
 ```
 
 This starts:
+
 - **Backend**: http://localhost:3001
 - **Frontend**: http://localhost:5173
 
@@ -101,6 +109,7 @@ sistema/
 ## Design Principles
 
 This project follows a philosophy of simplicity and clarity:
+
 - **Readable code** - prefer explicit over clever
 - **Small functions** - each does one thing well
 - **Clear structure** - business logic separate from UI

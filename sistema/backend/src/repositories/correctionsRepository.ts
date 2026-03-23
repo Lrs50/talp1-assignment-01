@@ -63,3 +63,18 @@ export function deleteCorrection(correctionId: number): boolean {
   const result = stmt.run(correctionId);
   return result.changes > 0;
 }
+
+export function updateCorrectionName(correctionId: number, newName: string): CorrectionRecord | null {
+  const db = getDatabase();
+  const stmt = db.prepare(`
+    UPDATE corrections
+    SET name = ?
+    WHERE id = ?
+  `);
+  const result = stmt.run(newName, correctionId);
+  
+  if (result.changes > 0) {
+    return getCorrectionById(correctionId);
+  }
+  return null;
+}

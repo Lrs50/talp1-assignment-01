@@ -9,7 +9,7 @@ export function HomePage() {
           color: "var(--color-text)",
           letterSpacing: "-0.01em",
         }}>
-          Exam System
+          Kotae
         </h1>
         <p style={{
           fontSize: "1rem",

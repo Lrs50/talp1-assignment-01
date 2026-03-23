@@ -72,7 +72,7 @@ export function PdfPreviewViewer({ pdfUrl, title }: Props) {
     };
 
     renderPage();
-  }, [currentPage, scale]);
+  }, [currentPage, scale, pdfRef.current]);
 
   if (loading) {
     return (
