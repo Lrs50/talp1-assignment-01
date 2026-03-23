@@ -112,7 +112,7 @@ export function ExamCorrectionsView({ examId, onClose }: Props) {
       <div style={{ marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
           <h1 style={{ margin: "0 0 8px", fontSize: "1.5rem", fontWeight: 600 }}>
-            📊 {exam?.title}
+            {exam?.title}
           </h1>
           <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
             {exam?.questionIds.length} questions · Mode: {exam?.answerMode}
