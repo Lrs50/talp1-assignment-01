@@ -37,19 +37,19 @@ export function GradeTable({ grades }: Props) {
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
-        gap: 10,
-        marginBottom: 20,
+        gap: 12,
+        marginBottom: 24,
       }}>
         {[
           { label: "Students", value: grades.length },
           { label: "Questions", value: questionCount },
           { label: "Class average", value: `${avg.toFixed(2)} / ${totalPossible}` },
         ].map(({ label, value }) => (
-          <div key={label} className="card" style={{ textAlign: "center", padding: "14px 16px" }}>
-            <p style={{ margin: 0, fontSize: "1.3rem", fontWeight: 600, color: "var(--color-text)", letterSpacing: "-0.02em" }}>
+          <div key={label} className="card" style={{ textAlign: "center", padding: "18px 20px", background: "var(--color-surface)" }}>
+            <p style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700, color: "var(--color-primary)", letterSpacing: "-0.02em" }}>
               {value}
             </p>
-            <p style={{ margin: "3px 0 0", fontSize: "0.72rem", color: "var(--color-text-subtle)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <p style={{ margin: "6px 0 0", fontSize: "0.75rem", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
               {label}
             </p>
           </div>
@@ -57,7 +57,7 @@ export function GradeTable({ grades }: Props) {
       </div>
 
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderBottom: "1px solid var(--color-border)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderBottom: "1px solid var(--color-border)" }}>
           <span className="section-label" style={{ margin: 0 }}>Grade Report</span>
           <button onClick={exportCsv} style={{ fontSize: "0.78rem" }}>Download CSV</button>
         </div>

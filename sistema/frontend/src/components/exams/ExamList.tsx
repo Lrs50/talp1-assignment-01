@@ -18,16 +18,16 @@ export function ExamList({ exams, correctionCounts, onEdit, onDelete, onGenerate
   if (exams.length === 0) {
     return (
       <div className="empty-state">
-        <p>No exams yet.</p>
+        <p>No exams found.</p>
         <p style={{ fontSize: "0.85rem", color: "var(--color-text-subtle)" }}>
-          Create an exam by selecting questions from your question bank.
+          Try adjusting your search or create a new exam.
         </p>
       </div>
     );
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       {exams.map((exam) => {
         const correctionCount = correctionCounts?.get(exam.id) ?? 0;
         const hasCorrections = correctionCount > 0;
@@ -36,43 +36,60 @@ export function ExamList({ exams, correctionCounts, onEdit, onDelete, onGenerate
         <div 
           key={exam.id} 
           className="card"
-          style={!hasCorrections ? {
-            opacity: 0.6,
-            color: "var(--color-text-muted)",
-          } : undefined}
+          style={{ padding: "20px 24px" }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-            <div style={{ flex: 1 }}>
-              <p style={{ margin: 0, fontWeight: 600, fontSize: "0.95rem", color: "var(--color-text)" }}>{exam.title}</p>
-              <div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "center", flexWrap: "wrap" }}>
-                <span className={`badge ${exam.answerMode === "letters" ? "badge-letters" : "badge-powers"}`}>
-                  {MODE_LABEL[exam.answerMode] ?? exam.answerMode}
-                </span>
-                <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>
-                  {exam.questionIds.length} question{exam.questionIds.length !== 1 ? "s" : ""}
-                </span>
-                {hasCorrections && (
-                  <span style={{ fontSize: "0.8rem", color: "var(--color-text-muted)" }}>
-                    {correctionCount} correction{correctionCount !== 1 ? "s" : ""}
-                  </span>
-                )}
-              </div>
-              {!hasCorrections && (
-                <p style={{ margin: "8px 0 0", fontSize: "0.8rem", color: "var(--color-text-muted)", fontStyle: "italic" }}>
-                  No corrections yet
+          {/* Header Section: Title + Mode */}
+          <div style={{ marginBottom: 16, paddingBottom: 16, borderBottom: "1px solid var(--color-border-subtle)" }}>
+            <p style={{ margin: 0, fontWeight: 700, fontSize: "1rem", color: "var(--color-text)", letterSpacing: "-0.01em" }}>
+              {exam.title}
+            </p>
+            <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <span className={`badge ${exam.answerMode === "letters" ? "badge-letters" : "badge-powers"}`}>
+                {MODE_LABEL[exam.answerMode] ?? exam.answerMode}
+              </span>
+            </div>
+          </div>
+
+          {/* Metadata Section: Questions, Corrections */}
+          <div style={{ marginBottom: 16, paddingBottom: 16, borderBottom: "1px solid var(--color-border-subtle)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div>
+                <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--color-text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+                  Questions
                 </p>
-              )}
-            </div>
-            <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--color-text)", fontWeight: 600 }}>
+                  {exam.questionIds.length}
+                </p>
+              </div>
               {hasCorrections && (
-                <button onClick={() => onViewCorrections(exam.id)} style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
-                  View Corrections
-                </button>
+                <div>
+                  <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--color-text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+                    Corrections
+                  </p>
+                  <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--color-text)", fontWeight: 600 }}>
+                    {correctionCount}
+                  </p>
+                </div>
               )}
-              <button className="btn-primary" onClick={() => onGenerate(exam)}>Generate PDF</button>
-              <button onClick={() => onEdit(exam)}>Edit</button>
-              <button onClick={() => onDelete(exam.id)} className="btn-danger">Delete</button>
             </div>
+          </div>
+
+          {/* Actions Section: Buttons */}
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
+            {hasCorrections && (
+              <button onClick={() => onViewCorrections(exam.id)} style={{ fontSize: "0.85rem", padding: "8px 14px" }}>
+                View Corrections
+              </button>
+            )}
+            <button className="btn-primary" onClick={() => onGenerate(exam)} style={{ fontSize: "0.85rem", padding: "8px 14px" }}>
+              Generate PDF
+            </button>
+            <button onClick={() => onEdit(exam)} style={{ fontSize: "0.85rem", padding: "8px 14px" }}>
+              Edit
+            </button>
+            <button onClick={() => onDelete(exam.id)} className="btn-danger" style={{ fontSize: "0.85rem", padding: "8px 14px" }}>
+              Delete
+            </button>
           </div>
         </div>
         );

@@ -16,6 +16,7 @@ export function ExamsPage() {
   const [previewingExam, setPreviewingExam] = useState<Exam | null>(null);
   const [generatingExam, setGeneratingExam] = useState<Exam | null>(null);
   const [viewingCorrectionsExamId, setViewingCorrectionsExamId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -182,14 +183,28 @@ export function ExamsPage() {
 
       {!loading && !creatingNew && !editingExam && !previewingExam && !generatingExam && !viewingCorrectionsExamId && (
         exams.length > 0 ? (
-          <ExamList
-            exams={exams}
-            correctionCounts={correctionCounts}
-            onEdit={setEditingExam}
-            onDelete={handleDelete}
-            onGenerate={setPreviewingExam}
-            onViewCorrections={setViewingCorrectionsExamId}
-          />
+          <>
+            <div className="card" style={{ marginBottom: 16 }}>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search exams by title…"
+                style={{ width: "100%" }}
+              />
+              <p className="helper-text" style={{ margin: "8px 0 0" }}>
+                {exams.filter(e => e.title.toLowerCase().includes(searchQuery.toLowerCase())).length} exam{exams.filter(e => e.title.toLowerCase().includes(searchQuery.toLowerCase())).length !== 1 ? "s" : ""} found
+              </p>
+            </div>
+            <ExamList
+              exams={exams.filter(e => e.title.toLowerCase().includes(searchQuery.toLowerCase()))}
+              correctionCounts={correctionCounts}
+              onEdit={setEditingExam}
+              onDelete={handleDelete}
+              onGenerate={setPreviewingExam}
+              onViewCorrections={setViewingCorrectionsExamId}
+            />
+          </>
         ) : (
           <div className="empty-state">
             <p>No exams yet.</p>
