@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import * as pdfjsLib from "pdfjs-dist";
+// Import the worker file with ?url to get its URL for local loading
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
 
-// Set up the PDF worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configure PDF.js to use the local worker (NOT CDN)
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 interface Props {
   pdfUrl: string;
