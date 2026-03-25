@@ -21,20 +21,12 @@ export function generateExamPdf(
   answerMode: AnswerMode
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    const doc = new PDFDocument({ margin: 50 });
+    const doc = new PDFDocument({ margin: 50, bufferPages: true });
     const buffers: Buffer[] = [];
-    let pageNum = 0;
 
     doc.on("data", (chunk) => buffers.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(buffers)));
     doc.on("error", reject);
-
-    // Track page additions for page numbering
-    doc.on("pageAdded", () => {
-      pageNum++;
-      // Add page number and version to footer (these will be overwritten except for the last page)
-      // We'll handle this at the end since PDFKit doesn't have great access to page boundaries
-    });
 
     // Header
     doc.fontSize(14).font("Helvetica-Bold").text(header.course, { align: "center" });
@@ -75,15 +67,29 @@ export function generateExamPdf(
     doc.text("CPF: ___________________________");
     doc.moveDown(2);
 
-    // Footer with page number and version
-    // Position: page number above version number
-    const pageHeight = doc.page.height;
-    const footerY = pageHeight - 50;
+    // Add footers to all pages before ending the document
+    const totalPages = doc.bufferedPageRange().count;
+    for (let i = 0; i < totalPages; i++) {
+      doc.switchToPage(i);
+      const pageHeight = doc.page.height;
+      const pageWidth = doc.page.width;
+      const footerY = pageHeight - 25;
+      
+      // Draw separator line
+      doc.strokeColor("#CCCCCC").lineWidth(0.5);
+      doc.moveTo(50, footerY - 8).lineTo(pageWidth - 50, footerY - 8).stroke();
+      
+      // Version number centered
+      doc.font("Helvetica", 8).fillColor("#333333");
+      const versionText = `Version ${version.versionNumber}`;
+      doc.text(versionText, 50, footerY, {
+        width: pageWidth - 100,
+        align: "center",
+        height: 20,
+      });
+    }
 
-    doc.fontSize(8).font("Helvetica");
-    doc.text(`Page ${pageNum}`, 50, footerY, { align: "right" });
-    doc.text(`Version: ${version.versionNumber}`, 50, footerY + 12, { align: "right" });
-
+    // End document after all modifications
     doc.end();
   });
 }

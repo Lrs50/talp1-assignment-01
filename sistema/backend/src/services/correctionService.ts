@@ -173,10 +173,10 @@ export function generateCorrectionReportPdf(
     doc.fontSize(11).font("Helvetica-Bold").text("Summary");
     doc.fontSize(10).font("Helvetica");
     doc.text(`Total Students: ${grades.length}`);
-    doc.text(`Average: ${average.toFixed(1)}%`);
-    doc.text(`Median: ${median.toFixed(1)}%`);
-    doc.text(`Highest: ${max.toFixed(1)}%`);
-    doc.text(`Lowest: ${min.toFixed(1)}%`);
+    doc.text(`Average: ${average.toFixed(2)}%`);
+    doc.text(`Median: ${median.toFixed(2)}%`);
+    doc.text(`Highest: ${max.toFixed(2)}%`);
+    doc.text(`Lowest: ${min.toFixed(2)}%`);
     doc.moveDown(1);
 
     // Table header
@@ -220,7 +220,7 @@ export function generateCorrectionReportPdf(
       doc.text(grade.studentName, col1, doc.y, { width: 120 });
       doc.text(grade.studentCpf, col2 - 30, doc.y - 11, { width: 80 });
       doc.text(`${grade.totalScore}/${grade.maxScore}`, col3 - 30, doc.y - 11, { width: 60, align: "right" });
-      doc.text(`${percentage.toFixed(1)}%`, col4 - 30, doc.y - 11, { width: 70, align: "right" });
+      doc.text(`${percentage.toFixed(2)}%`, col4 - 30, doc.y - 11, { width: 70, align: "right" });
       doc.text(letterGrade, col5 - 30, doc.y - 11, { width: 40, align: "center" });
       doc.moveDown(0.4);
     });

@@ -5,7 +5,7 @@ import { Builder, WebDriver } from "selenium-webdriver";
  * Configured to run against local dev server (localhost:3000).
  */
 
-const FRONTEND_BASE_URL = "http://localhost:3000";
+const FRONTEND_BASE_URL = "http://localhost:5173";
 const BACKEND_BASE_URL = "http://localhost:3001";
 
 /**

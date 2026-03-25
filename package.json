@@ -4,7 +4,9 @@
   "scripts": {
     "setup": "npm install --prefix sistema/backend && npm install --prefix sistema/frontend && npm install --prefix sistema/tests",
     "dev": "concurrently --names \"backend,frontend\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix sistema/backend\" \"npm run dev --prefix sistema/frontend\"",
-    "test": "npm test --prefix sistema/tests"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "npm test --prefix sistema/tests",
+    "test:e2e": "npm run test:e2e --prefix sistema/tests"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

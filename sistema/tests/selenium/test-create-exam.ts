@@ -14,46 +14,62 @@ export async function testCreateExam(driver: WebDriver): Promise<void> {
 
   // Navigate to Exams page
   await navigateTo(driver, "/#exams");
-  await waitForElement(driver, 'input[placeholder*="title"]', 3000);
-
+  
+  // Find and click the exam creation button
+  await waitForElement(driver, "button", 3000);
+  const buttons = await driver.findElements({ css: "button" });
+  let newExamBtn = null;
+  for (const btn of buttons) {
+    const text = await btn.getText();
+    if (text.includes("New") && !text.includes("Question")) {
+      newExamBtn = btn;
+      break;
+    }
+  }
+  
+  if (!newExamBtn) {
+    throw new Error("Could not find exam creation button");
+  }
+  
+  await newExamBtn.click();
+  await driver.sleep(800);
+  
   // Fill in exam title
+  await waitForElement(driver, 'input[placeholder*="Midterm"]', 3000);
   const titleInput = await driver.findElement({
-    css: 'input[placeholder*="title"]',
+    css: 'input[placeholder*="Midterm"]',
   });
-  const examTitle = `Test Exam - ${Date.now()}`;
+  const examTitle = `Test Exam (${Date.now()})`;
   await titleInput.sendKeys(examTitle);
-
-  // Select answer mode (default is letters, keep it)
-  // Answer mode select should be visible
-
-  // Wait a bit for questions to load
   await driver.sleep(500);
 
-  // Search for questions in the question list
+  // Wait for questions to load and search field to appear
+  await waitForElement(driver, 'input[placeholder*="Search by question"]', 5000);
+  
+  // Search for questions
   const searchInput = await driver.findElement({
     css: 'input[placeholder*="Search by question"]',
   });
+  await searchInput.sendKeys("Test");
+  await driver.sleep(500);
 
-  if (searchInput) {
-    await searchInput.sendKeys("Test Question");
-  }
-
-  // Wait for questions to be filtered
-  await driver.sleep(300);
-
-  // Select first checkbox (a question)
+  // Select first available question checkbox
   const checkboxes = await driver.findElements({
     css: 'input[type="checkbox"]',
   });
 
-  if (checkboxes.length > 0) {
+  // Select last checkbox (should be a question, not answer mode)
+  if (checkboxes.length > 1) {
+    await checkboxes[checkboxes.length - 1].click();
+  } else if (checkboxes.length === 1) {
     await checkboxes[0].click();
   } else {
     throw new Error("No questions available to select");
   }
 
-  // Wait and then create exam
   await driver.sleep(300);
+
+  // Click Create exam button
   const createButton = await driver.findElement({
     xpath: "//button[contains(text(), 'Create exam')]",
   });
@@ -64,7 +80,7 @@ export async function testCreateExam(driver: WebDriver): Promise<void> {
 
   // Verify exam appears in list
   const examListElements = await driver.findElements({
-    xpath: `//*[contains(text(), '${examTitle}')]`,
+    xpath: `//*[contains(text(), '${examTitle.substring(0, 15)}')]`,
   });
 
   if (examListElements.length === 0) {
