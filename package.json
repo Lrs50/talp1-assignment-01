@@ -8,5 +8,8 @@
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
+  },
+  "dependencies": {
+    "webdriver-manager": "^12.1.9"
   }
 }

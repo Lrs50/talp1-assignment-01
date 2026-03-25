@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js --config cucumber.json"
+    "test": "cucumber-js --config cucumber.json",
+    "test:e2e": "ts-node selenium/run-e2e-tests.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +17,9 @@
     "@types/node": "^25.5.0",
     "adm-zip": "^0.5.16",
     "node-fetch": "^3.3.2",
+    "selenium-webdriver": "^4.21.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "webdriver-manager": "^12.1.9"
   }
 }

@@ -13,12 +13,18 @@ export function ExamForm({ exam, availableQuestions, onSave, onCancel }: Props) 
   const [title, setTitle] = useState(exam?.title ?? "");
   const [answerMode, setAnswerMode] = useState<AnswerMode>(exam?.answerMode ?? "letters");
   const [selectedIds, setSelectedIds] = useState<number[]>(exam?.questionIds ?? []);
+  const [searchQuery, setSearchQuery] = useState("");
 
   function toggleQuestion(id: number) {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((q) => q !== id) : [...prev, id]
     );
   }
+
+  // Filter questions by search query
+  const filteredQuestions = availableQuestions.filter((q) =>
+    q.statement.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -74,48 +80,78 @@ export function ExamForm({ exam, availableQuestions, onSave, onCancel }: Props) 
               No questions available. Go to the Questions tab to create some first.
             </p>
           ) : (
-            <div style={{
-              maxHeight: 220,
-              overflowY: "auto",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-sm)",
-            }}>
-              {availableQuestions.map((q, index) => {
-                const checked = selectedIds.includes(q.id);
-                return (
-                  <label
-                    key={q.id}
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      alignItems: "flex-start",
-                      padding: "10px 12px",
-                      borderBottom: index < availableQuestions.length - 1 ? "1px solid var(--color-border)" : "none",
-                      background: checked ? "var(--color-border-subtle)" : "transparent",
-                      cursor: "pointer",
-                      textTransform: "none",
-                      letterSpacing: 0,
-                      fontWeight: 400,
-                      fontSize: "0.9rem",
-                      color: "var(--color-text)",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => toggleQuestion(q.id)}
-                      style={{ marginTop: 2, width: "auto", padding: 0, flexShrink: 0 }}
-                    />
-                    <span style={{ lineHeight: 1.4 }}>
-                      {q.statement}
-                      <span style={{ display: "block", fontSize: "0.78rem", color: "var(--color-text-muted)", marginTop: 2 }}>
-                        {q.alternatives.length} alternative{q.alternatives.length !== 1 ? "s" : ""}
-                      </span>
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
+            <>
+              {/* Search field */}
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by question text…"
+                style={{
+                  width: "100%",
+                  marginBottom: 8,
+                  padding: "8px 10px",
+                  fontSize: "0.875rem",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-sm)",
+                  fontFamily: "inherit",
+                }}
+              />
+              <p style={{ margin: "4px 0 8px", fontSize: "0.75rem", color: "var(--color-text-muted)" }}>
+                {filteredQuestions.length} question{filteredQuestions.length !== 1 ? "s" : ""} found
+              </p>
+
+              {/* Question list */}
+              <div style={{
+                maxHeight: 220,
+                overflowY: "auto",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-sm)",
+              }}>
+                {filteredQuestions.length === 0 ? (
+                  <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", padding: "12px", margin: 0 }}>
+                    No matching questions
+                  </p>
+                ) : (
+                  filteredQuestions.map((q, index) => {
+                    const checked = selectedIds.includes(q.id);
+                    const correctCount = q.alternatives.filter((a) => a.isCorrect).length;
+                    return (
+                      <label
+                        key={q.id}
+                        style={{
+                          display: "flex",
+                          gap: 10,
+                          alignItems: "flex-start",
+                          padding: "10px 12px",
+                          borderBottom: index < filteredQuestions.length - 1 ? "1px solid var(--color-border)" : "none",
+                          background: checked ? "var(--color-border-subtle)" : "transparent",
+                          cursor: "pointer",
+                          textTransform: "none",
+                          letterSpacing: 0,
+                          fontWeight: 400,
+                          fontSize: "0.9rem",
+                          color: "var(--color-text)",
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleQuestion(q.id)}
+                          style={{ marginTop: 2, width: "auto", padding: 0, flexShrink: 0 }}
+                        />
+                        <span style={{ lineHeight: 1.4 }}>
+                          {q.statement}
+                          <span style={{ display: "block", fontSize: "0.78rem", color: "var(--color-text-muted)", marginTop: 2 }}>
+                            {q.alternatives.length} alternatives ({correctCount} correct)
+                          </span>
+                        </span>
+                      </label>
+                    );
+                  })
+                )}
+              </div>
+            </>
           )}
         </div>
 

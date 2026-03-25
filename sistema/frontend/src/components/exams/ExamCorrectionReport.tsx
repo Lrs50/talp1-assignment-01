@@ -1,10 +1,13 @@
 import type { CorrectionRecord, StudentGrade } from "../../api/correction";
 import { generateCorrectionReportPdf } from "../../api/exams";
+import { useState } from "react";
 import { ScoreDistributionChart } from "./ScoreDistributionChart";
 
 interface Props {
   correction: CorrectionRecord;
   onClose: () => void;
+  onEdit?: (correctionId: number, newName: string) => Promise<void>;
+  onDelete?: (correctionId: number) => Promise<void>;
 }
 
 function getLetterGrade(percentage: number): string {
@@ -15,8 +18,11 @@ function getLetterGrade(percentage: number): string {
   return "F";
 }
 
-export function ExamCorrectionReport({ correction, onClose }: Props) {
+export function ExamCorrectionReport({ correction, onClose, onEdit, onDelete }: Props) {
   const grades: StudentGrade[] = correction.results;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState(correction.name || "");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   if (grades.length === 0) {
     return (
@@ -63,14 +69,6 @@ export function ExamCorrectionReport({ correction, onClose }: Props) {
     };
   });
 
-  const createdDate = new Date(correction.created_at).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Header */}
@@ -79,12 +77,99 @@ export function ExamCorrectionReport({ correction, onClose }: Props) {
           <h2 style={{ margin: "0 0 8px", fontSize: "1.25rem", fontWeight: 600 }}>
             Correction Report
           </h2>
-          <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
-            {correction.name ? `${correction.name} · ` : ""}
-            {createdDate} · Mode: {correction.correction_mode}
-          </p>
+          {isEditing ? (
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <input
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Correction name..."
+                style={{
+                  padding: "4px 8px",
+                  fontSize: "0.9rem",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-sm)",
+                  fontFamily: "inherit",
+                }}
+              />
+              <button
+                onClick={async () => {
+                  if (onEdit) {
+                    try {
+                      await onEdit(correction.id, editName);
+                      setIsEditing(false);
+                    } catch (err) {
+                      console.error("Error updating correction:", err);
+                      alert("Failed to update correction");
+                    }
+                  }
+                }}
+                style={{ padding: "4px 12px", fontSize: "0.85rem" }}
+              >
+                Save
+              </button>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditName(correction.name || "");
+                }}
+                style={{ padding: "4px 12px", fontSize: "0.85rem" }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--color-text-muted)" }}>
+              {correction.name ? `${correction.name} · ` : ""}
+              {new Date(correction.created_at).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })} · Mode: {correction.correction_mode}
+            </p>
+          )}
         </div>
         <div style={{ display: "flex", gap: 6 }}>
+          {!isEditing && (
+            <>
+              <button
+                onClick={() => setIsEditing(true)}
+                style={{ padding: "6px 12px", fontSize: "0.85rem" }}
+                title="Edit correction name"
+              >
+                Edit
+              </button>
+              <button
+                onClick={async () => {
+                  if (!isDeleting) {
+                    setIsDeleting(true);
+                    return;
+                  }
+                  if (onDelete) {
+                    try {
+                      await onDelete(correction.id);
+                      onClose();
+                    } catch (err) {
+                      console.error("Error deleting correction:", err);
+                      alert("Failed to delete correction");
+                      setIsDeleting(false);
+                    }
+                  }
+                }}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "0.85rem",
+                  background: isDeleting ? "var(--color-danger)" : "transparent",
+                  color: isDeleting ? "white" : "var(--color-text)",
+                }}
+                title={isDeleting ? "Click again to confirm deletion" : "Delete correction"}
+              >
+                {isDeleting ? "Confirm Delete" : "Delete"}
+              </button>
+            </>
+          )}
           <button 
             onClick={async () => {
               try {

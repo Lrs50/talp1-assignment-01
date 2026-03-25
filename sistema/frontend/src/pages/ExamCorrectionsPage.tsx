@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCorrectionsByExamId } from "../api/correction";
+import { getCorrectionsByExamId, updateCorrectionName, deleteCorrection } from "../api/correction";
 import type { CorrectionRecord } from "../api/correction";
 import { fetchExams, type Exam } from "../api/exams";
 import { ExamCorrectionReport } from "../components/exams/ExamCorrectionReport";
@@ -103,6 +103,33 @@ export function ExamCorrectionsView({ examId, onClose }: Props) {
       <ExamCorrectionReport
         correction={selectedCorrection}
         onClose={() => setSelectedCorrection(null)}
+        onEdit={async (correctionId: number, newName: string) => {
+          try {
+            await updateCorrectionName(correctionId, newName);
+            // Update the correction in state
+            setCorrections(
+              corrections.map((c) =>
+                c.id === correctionId ? { ...c, name: newName } : c
+              )
+            );
+            // Update the selected correction display
+            setSelectedCorrection({ ...selectedCorrection, name: newName });
+          } catch (err) {
+            const errorMsg = err instanceof Error ? err.message : "Failed to update correction";
+            throw new Error(errorMsg);
+          }
+        }}
+        onDelete={async (correctionId: number) => {
+          try {
+            await deleteCorrection(correctionId);
+            // Remove from state
+            setCorrections(corrections.filter((c) => c.id !== correctionId));
+            setSelectedCorrection(null);
+          } catch (err) {
+            const errorMsg = err instanceof Error ? err.message : "Failed to delete correction";
+            throw new Error(errorMsg);
+          }
+        }}
       />
     );
   }

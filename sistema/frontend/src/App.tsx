@@ -56,9 +56,20 @@ export default function App() {
                   border: "none",
                   cursor: "pointer",
                   padding: 0,
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 6,
                 }}
               >
                 Kotae
+                <span style={{
+                  fontSize: "0.85rem",
+                  opacity: 0.6,
+                  fontWeight: 400,
+                  letterSpacing: 0,
+                }}>
+                  答え
+                </span>
               </button>
               {currentPage !== "home" && (
                 <nav style={{ display: "flex", gap: 24 }}>

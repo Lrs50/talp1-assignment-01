@@ -58,3 +58,13 @@ export function renameCorrectionRecord(correctionId: number, newName: string): P
     body: JSON.stringify({ name: newName }),
   });
 }
+
+export function updateCorrectionName(correctionId: number, newName: string): Promise<CorrectionRecord> {
+  return renameCorrectionRecord(correctionId, newName);
+}
+
+export function deleteCorrection(correctionId: number): Promise<{ success: boolean; message: string }> {
+  return request<{ success: boolean; message: string }>(`/correction/${correctionId}`, {
+    method: "DELETE",
+  });
+}

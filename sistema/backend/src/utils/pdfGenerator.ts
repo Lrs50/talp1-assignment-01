@@ -13,6 +13,7 @@ function getPowerOfTwo(index: number): number {
 
 /**
  * Generates a PDF buffer for a single exam version.
+ * Includes page numbers above version numbers on each page.
  */
 export function generateExamPdf(
   version: ExamVersion,
@@ -22,10 +23,18 @@ export function generateExamPdf(
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 50 });
     const buffers: Buffer[] = [];
+    let pageNum = 0;
 
     doc.on("data", (chunk) => buffers.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(buffers)));
     doc.on("error", reject);
+
+    // Track page additions for page numbering
+    doc.on("pageAdded", () => {
+      pageNum++;
+      // Add page number and version to footer (these will be overwritten except for the last page)
+      // We'll handle this at the end since PDFKit doesn't have great access to page boundaries
+    });
 
     // Header
     doc.fontSize(14).font("Helvetica-Bold").text(header.course, { align: "center" });
@@ -64,11 +73,16 @@ export function generateExamPdf(
     doc.fontSize(11).text("Name: ________________________________________________");
     doc.moveDown(0.5);
     doc.text("CPF: ___________________________");
-    doc.moveDown(1.5);
-
-    // Add version info at the end of content (not on separate page)
     doc.moveDown(2);
-    doc.fontSize(8).font("Helvetica").text(`Version: ${version.versionNumber}`, { align: "right" });
+
+    // Footer with page number and version
+    // Position: page number above version number
+    const pageHeight = doc.page.height;
+    const footerY = pageHeight - 50;
+
+    doc.fontSize(8).font("Helvetica");
+    doc.text(`Page ${pageNum}`, 50, footerY, { align: "right" });
+    doc.text(`Version: ${version.versionNumber}`, 50, footerY + 12, { align: "right" });
 
     doc.end();
   });

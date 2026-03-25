@@ -152,4 +152,20 @@ router.get("/:id/report-pdf", async (req: Request<{ id: string }>, res: Response
   }
 });
 
+router.delete("/:id", (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const correctionId = parseInt(req.params.id, 10);
+    const deleted = correctionsRepository.deleteCorrection(correctionId);
+
+    if (!deleted) {
+      res.status(404).json({ error: `Correction ${correctionId} not found` });
+      return;
+    }
+
+    res.json({ success: true, message: "Correction deleted" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;
